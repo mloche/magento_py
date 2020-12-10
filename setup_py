@@ -1,3 +1,49 @@
 #!/bin/python3
+import apt_pkg
+import sys
 
-print("it works !")
+print("Starting ! \n")
+apt_pkg.init()
+
+pkg_cache=apt_pkg.Cache()
+pkg_cache.update()
+pkg_cache.open()
+pkg_cache.upgrade()
+
+pkg_name = input("Type package you want for install of check \n")
+
+
+
+pkg=pkg_cache[pkg_name]
+
+if pkg.is_installed:
+	print("{} already installed".format(pkg_name))
+else:
+	pkg.mark_install()
+	try:
+		pkg_cache.commit()
+	except arg:
+		print >> sys.stderr, "Sorry, package install failed [{err}]".format(err=str(arg))
+
+
+###fonction de tests de la lib
+def list_pkg():
+	apt_pkg.init()
+	cache = apt_pkg.Cache()
+	print(type(cache))
+
+	print("essential packages")
+	for pkg in cache.packages:
+		if pkg.essential:
+			print(" ",pkg.name)
+	print("important packages")
+	for pkg in cache.packages:
+		if pkg.important:
+			print(" ",pkg.name)
+
+
+
+#if __name__ == "__main__":
+#	list_pkg()
+
+

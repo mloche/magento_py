@@ -1,3 +1,5 @@
+#packages et conf requis
+
 install apache2
 -version 2.4.38
 install mariadb-server
@@ -82,7 +84,7 @@ Service restart apache
 
 #check if ok with :   curl -i http://localhost:8080/_cluster/health
 
-
+################################""
 #via composer
 #install composer
 #composer create-project...
@@ -95,14 +97,15 @@ Service restart apache
 #command tar -xvzf mangento.tar -C /var/www/html/magento
 	#passer /bin/mangento en executable sinon	pas d'exe dans /magento/bin
 
-
+#######################################
 
 
 Probleme a résoudre, acquisition du logiciel, clone git ?
 
 cd /var/www/html/
 git clone https://github.com/magento/magento2.git
-checkout -tag
+git checkout tag/2.4.1
+git pull
 #verifier la version ou branche téléchargée pour être sur la latest
 
 
@@ -132,3 +135,9 @@ chown
 	--base-url
 
 command ./magento cron:install
+
+
+###########################
+Librairies Python utiles
+
+apt_pkg

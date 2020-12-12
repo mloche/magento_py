@@ -1,7 +1,7 @@
 #!/bin/python3
 import apt
 import sys
-#import pyyaml
+import yaml
 
 print("Starting ! \n")
 
@@ -29,6 +29,11 @@ def install_package():
 		print("'" + pkg_name + "' was not found")
 
 
-install_package()
+#install_package()
 
-
+with open('config_files/items.yaml') as file:
+	data = yaml.load(file, Loader=yaml.FullLoader)
+	print(data)
+	print(type(data))
+	for key in data.keys():
+		print("key : {}, Value : {}" .format(key,data[key]))

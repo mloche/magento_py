@@ -6,3 +6,7 @@ Multi:
  - One
  - Two
  - Three
+packages: 
+ - vim
+ - nano
+ - openssh-server

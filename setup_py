@@ -9,7 +9,7 @@ print("Starting ! \n")
 ### Function installing given as variable package #######
 
 def install_package(pkg_name):
-	print("Updating cache, please wait !")
+	print("Entering install_package and updating cache, please wait !")
 	pkg_cache=apt.Cache()
 	pkg_cache.update()
 	pkg_cache.open(None)
@@ -45,13 +45,14 @@ def import_package_file():
 				package_list=data[key]
 				value=0
 				max=len(package_list)
-				print(max)
+				print("valeur de Max : " + str(max))
 				for value in range(0,max):
 					print(package_list[value])
-
-#					install_package(package_list[value])
-#			else:
-#				print("Other param boucle")
+					install_package(package_list[value])
+			elif key == "cities":
+				print("value for cities {} - {}".format(key,data[key]))
+			else:
+				print("unknown parameter {} - {}".format(key,data[key]))
 
 
 ####################################################

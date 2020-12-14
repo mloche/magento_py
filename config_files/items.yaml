@@ -10,3 +10,8 @@ packages:
  - vim
  - nano
  - openssh-server
+database: #requires ip_address, db_admin, db_password, db_name
+ - 192.168.1.6
+ - magento
+ - magento
+ - magento

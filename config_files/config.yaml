@@ -1,0 +1,25 @@
+#List of required packages
+
+packages:
+ - apache2
+ - mariadb-server
+ - php-mysql
+ - git
+ - libapache2-mod-php
+ - php-bcmath
+ - php-curl
+ - php-xml
+ - php-gd
+ - php-mbstring
+ - php-intl
+ - php-soap
+ - php-zip
+ - openjdk-11-jdk
+ - composer
+
+#config for database, comes with ip_adress, db_username, db_password, db_name
+database:
+ - localhost
+ - magento
+ - magento
+ - magento

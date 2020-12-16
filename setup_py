@@ -2,8 +2,9 @@
 import apt
 import sys
 import yaml
+# import os #depreciated must use subprocess
 import pymysql as mariadb
-import os
+import subprocess
 
 print("Starting ! \n")
 
@@ -48,6 +49,30 @@ def install_package(pkg_name):
 	except KeyError:
 		print(" Package ' " + pkg_name + " '  was not found")
 
+#using bash commands 
+def command_use(cmd):
+	print("received commands in command_use are {} ".format(cmd))
+	value=0
+	max=len(cmd)
+#	completed=subprocess.run(['ls', '-l'])
+#	print("return code : ", completed.returncode)
+	for value in range(0,max):
+#		print(cmd[value])
+		try:
+			try_cmd=cmd[value]
+			try_cmd=try_cmd.split()
+#			try_cmd="md"
+#			print("try_cmd after split  :" , try_cmd)
+#			os.system(try_cmd)
+			completed= subprocess.run(try_cmd)
+			print("Result for command {} : {} ".format(cmd[value], completed.returncode))
+		except subprocess.CalledProcessError as err:
+			print("Error : ", err)
+
+#modify config files for magento setup
+def modify_conf_files():
+	print("Function modify_config_files started !")
+
 
 ###### Function reading the yaml file and extracting the data to call
 ###### each function with its arguments
@@ -71,6 +96,14 @@ def import_package_file():
 #control			print("value for {} - {}".format(key,data[key]))
 				db_info=data[key]
 				configure_database(db_info[0],db_info[1],db_info[2],db_info[3])
+			elif key == "commands":
+				bash_cmd=data[key]
+				print("the bash_cmd is {}".format(type(bash_cmd)))
+				print("read commands are {} ".format(bash_cmd))
+				command_use(bash_cmd)
+#				for folder in bash_cmd.key():
+#					print(folder)
+#				print("Read command for file {} is {}".format(key,data[key]))
 			else:
 				print("unknown parameter {} - {}".format(key,data[key]))
 
@@ -80,3 +113,4 @@ def import_package_file():
 ####################################################
 
 import_package_file()
+modify_conf_files()

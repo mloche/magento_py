@@ -17,3 +17,8 @@ libmariadbclient-dev
 #notes :
 #if databse is on remote server, allow connection to the database from the serveur where the 
 #script will be executed
+Config files are in config_files/
+	- cert.cnf for the auto certification informations, can be personalized with Organization
+	 informations
+
+	- config.yaml for all the conf params

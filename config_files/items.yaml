@@ -19,7 +19,7 @@ commands:
 #Testing purpose - touch /tmp/test
 #Testing purpose - echo "Hello world"
  - mkdir -p /etc/apache2/ssl # '-p' arg takes care of existing folder case
-#ask for responses - openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/apache2/ssl/apache.key -out /etc/apache2/ssl/apache.crt
+ - openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/apache2/ssl/apache.key -out /etc/apache2/ssl/apache.crt --config config_files/cert.cnf
  - chmod -R 600 /etc/apache2/ssl
 # - wget https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-7.10.0-amd64.deb -P /tmp/
  - wget https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-7.10.0-amd64.deb.sha512 -P /tmp/

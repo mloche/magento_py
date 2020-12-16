@@ -69,10 +69,39 @@ def command_use(cmd):
 		except subprocess.CalledProcessError as err:
 			print("Error : ", err)
 
-#modify config files for magento setup
-def modify_conf_files():
-	print("Function modify_config_files started !")
+#adding lines in begining of conf file
+def insert_begining_conf_files(file, added_text):
+	with open(file, "r+") as file: # 'a+' mode permit read, write and create file if not existing
+		pos_begin=file.tell()
+		print(pos_begin)
+#	file = open('/tmp/file', 'a+')
+		#file.seek(0, 0)
+		#pos_end=file.tell()
+		#print(pos_end)
+		file.write(added_text + "\n")
+		print("end of modif file loop")
+#	file.close()
 
+#Replacing line from file ton another
+
+def replace_line_file(file,string,new_string):
+	print("received replace file args : ", file, string, new_string)
+	with open(file,"r") as read_file:
+		rlines=read_file.readlines()
+		print("rlines :" , rlines)
+#		temp=rlines[0].find(string)
+#		print("temp : ", temp)
+		for i in range(0,len(rlines)):
+			if rlines[i].find(string) != "-1":
+				rlines[i]=new_string
+#				temp=rlines[i].find(string)
+				print("temp : ", rlines[i])
+			else:
+				rlines[i]=rlines[i]
+	with open(file, "w") as write_file:
+		for wlines in rlines:
+			write_file.write(wlines + "\n")
+	print("end of replace loop")
 
 ###### Function reading the yaml file and extracting the data to call
 ###### each function with its arguments
@@ -104,6 +133,12 @@ def import_package_file():
 #				for folder in bash_cmd.key():
 #					print(folder)
 #				print("Read command for file {} is {}".format(key,data[key]))
+			elif key == "insert":
+				args=data[key]
+				print("Insert arg received are : ", data[key])
+				insert_begining_conf_files(args[0],args[1])
+			elif key == "modify":
+				print("modify args received are : ", data[key])
 			else:
 				print("unknown parameter {} - {}".format(key,data[key]))
 
@@ -112,5 +147,6 @@ def import_package_file():
 #              MAIN PROGRAM                        #
 ####################################################
 
-import_package_file()
-modify_conf_files()
+#import_package_file()
+#insert_begining_conf_files('/tmp/file',"ajout en ligne 1 via argument")
+replace_line_file("/tmp/file","ligne 1","ligne 0")

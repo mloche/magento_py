@@ -22,3 +22,5 @@ Config files are in config_files/
 	 informations
 
 	- config.yaml for all the conf params
+
+Secure mariadb installation to be done using SH script

@@ -198,7 +198,7 @@ if len(sys.argv) != 2:
 
 ### Import YAML file content into yaml_data variable ###
 yaml_data=import_yaml_file(sys.argv[1])
-#control# print(yaml_data)
+print(yaml_data)
 
 ### Retrieve package list in YAML file and call the main package management process ###
 
@@ -218,9 +218,9 @@ yaml_data=import_yaml_file(sys.argv[1])
 #modif_infos=yaml_data.get('insert')
 #print(modif_infos)
 
-#activate modules and run commands
-#apache_infos=yaml_data.get('commands').get('apache2')
-#print(apache_infos)
+### Activate modules and run commands  ###
+apache_cmd=yaml_data.get('commands').get('apache2')
+print(apache_cmd)
 
 
 #install magento (copy from git, composer install and run setup)

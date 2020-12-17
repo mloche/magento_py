@@ -4,6 +4,8 @@ database:
  db_admin: magento
  db_password: magento
  db_name: magento
+ db_port: 3306
+
 
 packages:
  - apache2

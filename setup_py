@@ -6,50 +6,75 @@ import yaml
 import pymysql as mariadb
 import subprocess
 
-print("Starting ! \n")
 
-####connecting and configuring database 
-def configure_database(db_serv,db_admin,db_pass,db_name):
-	conn=0
+print("#####################################\n###### {} IS STARTING ###### \n ".format(sys.argv[0]))
+
+### Connecting to database returns connector ### 
+def connect_database(db_serv,db_admin,db_pass,db_name,db_port):
 	try:
-		conn = mariadb.connect(host=db_serv,user=db_admin,password=db_pass,database=db_name,port=3306)
-	except mariadb.Error as e:
-		print("error connecting to mariadb platform: {}".format(e))
+		conn = mariadb.connect(host=db_serv,user=db_admin,password=db_pass,database=db_name,port=db_port)
+	except mariadb.Error as error:
+		print("error connecting to mariadb platform: {}".format(error))
+	return(conn)
 
-	cursor = conn.cursor()
-	cursor.execute("SELECT VERSION()")
-	data = cursor.fetchone()
-	print("database version :  {}".format(data))
-	cursor.execute("show grants;")
-	data = cursor.fetchone()
-	print(data)
-	conn.close()
+### Query database, requires connector and query, returns query result ###
+def database_query(conn,query):
+	try:
+		cursor = conn.cursor()
+		cursor.execute(query)
+		data_query = cursor.fetchone()
+	except:
+		print("could not query {} with {}".format(conn,query))
+	return(data_query)
+
+### Connects to the database using the db_info list and the query list, execute querys ###
+def data_base(db_info,query):
+#control purpose	print("received {} and {}".format(db_info,query))
+	try:
+		db_conn=connect_database(db_info["ip_address"],db_info["db_admin"],db_info["db_password"],db_info["db_name"],db_info['db_port'])
+		value =0
+		max=len(query)
+		for value in range(0,max):
+			query_result=database_query(db_conn,query[value])
+			print(query_result)
+	except:
+		print("could not query {} to database {}".format(query,db_info))
+	print("Releasing the database")
+	db_conn.close()
+
+
 
 ### Function installing the package given as variable #######
-
-def install_package(pkg_name):
-	print("Entering install_package and updating cache, please wait !")
+def install_package(package_list):
+	print("Updating cache and installing package, please wait !")
+	print("package list received : ",package_list)
 	pkg_cache=apt.Cache()
 	pkg_cache.update()
 	pkg_cache.open(None)
 	pkg_cache.upgrade()
+	value=0
+	max=len(package_list)
+#	print(max)
+#	print("package 2", package_list[max-1])
+	for value in range(0,max):
 #	pkg_name = input("Type package you want for install of check if installed \n")
-	try:
-		inst_pkg = pkg_cache[pkg_name]
-		print("inst_package = " + pkg_name)
-		if inst_pkg.is_installed:
-			print("{} already installed".format(pkg_name))
-		else:
-			inst_pkg.mark_install()
-			try:
-				print("Installing ' " + pkg_name + " ' please wait")
-				pkg_cache.commit()
-			except arg:
-				print(" >>", sys.stderr, "Sorry, package install failed [{err}]".format(err=str(arg)))
-	except KeyError:
-		print(" Package ' " + pkg_name + " '  was not found")
+		try:
+			inst_pkg = pkg_cache[package_list[value]]
+#			print("inst_package = " , inst_pkg)
+			if inst_pkg.is_installed:
+				print("{} already installed".format(inst_pkg))
+			else:
+				inst_pkg.mark_install()
+				try:
+#				print("Installing ' " + pkg_name + " ' please wait")
+					pkg_cache.commit()
+				except arg:
+					print(" >>", sys.stderr, "Sorry, package install failed [{err}]".format(err=str(arg)))
+		except KeyError:
+			print(" Package was not found" , inst_pkg[value])
 
-#using bash commands 
+#using bash command given as arg 
+
 def command_use(cmd):
 	print("received commands in command_use are {} ".format(cmd))
 	value=0
@@ -62,22 +87,29 @@ def command_use(cmd):
 			try_cmd=cmd[value]
 			try_cmd=try_cmd.split()
 #			try_cmd="md"
-#			print("try_cmd after split  :" , try_cmd)
+			print("try_cmd after split  :" , try_cmd)
 #			os.system(try_cmd)
 			completed= subprocess.run(try_cmd)
 			print("Result for command {} : {} ".format(cmd[value], completed.returncode))
 		except subprocess.CalledProcessError as err:
+
 			print("Error : ", err)
+
+
+			print("Error using command : ", err)
 
 #adding lines in begining of conf file
 def insert_begining_conf_files(file, added_text):
-	with open(file, "r+") as file: # 'a+' mode permit read, write and create file if not existing
-		pos_begin=file.tell()
-		print(pos_begin)
+	with open(file, "r+") as file: 
+#		pos_begin=file.tell()
+#		print(pos_begin)
 #	file = open('/tmp/file', 'a+')
-		#file.seek(0, 0)
+#		file.seek(0, 0)
 		#pos_end=file.tell()
 		#print(pos_end)
+		file.write(" \n")
+		file.seek(0)
+		print(file.tell())
 		file.write(added_text + "\n")
 		print("end of modif file loop")
 #	file.close()
@@ -106,41 +138,40 @@ def replace_line_file(file,string,new_string):
 ###### Function reading the yaml file and extracting the data to call
 ###### each function with its arguments
 
-def import_package_file():
-	print("Starting Import package")
-	with open('config_files/items.yaml') as file:
-		data = yaml.load(file, Loader=yaml.FullLoader)
-		print("Data read are : {}".format(data))
-		for key in data.keys():
-			if key == "packages":
-				print("Installing {} -  {}" .format(key,data[key]))
-				package_list=data[key]
-				value=0
-				max=len(package_list)
-				print("valeur de Max : " + str(max))
-				for value in range(0,max):
-					print(package_list[value])
-#					install_package(package_list[value])
-			elif key == "database":
-#control			print("value for {} - {}".format(key,data[key]))
-				db_info=data[key]
-				configure_database(db_info[0],db_info[1],db_info[2],db_info[3])
-			elif key == "commands":
-				bash_cmd=data[key]
-				print("the bash_cmd is {}".format(type(bash_cmd)))
-				print("read commands are {} ".format(bash_cmd))
-				command_use(bash_cmd)
+def import_yaml_file(file):
+	print("Starting Import yaml")
+	try:
+		with open(file) as read_file:
+			data = yaml.load(read_file, Loader=yaml.FullLoader)
+#			print("Data read are : {}".format(data))
+			return(data)
+	except :
+		print("Could not open {} file".format(file))
+
+
+
+
+
+
+def temp(data):			
+	for key in data.keyx():	
+		if key == "commands":
+			bash_cmd=data[key]
+			print("the bash_cmd is {}".format(type(bash_cmd)))
+			print("read commands are {} ".format(bash_cmd))
+			command_use(bash_cmd)
 #				for folder in bash_cmd.key():
 #					print(folder)
 #				print("Read command for file {} is {}".format(key,data[key]))
-			elif key == "insert":
-				args=data[key]
-				print("Insert arg received are : ", data[key])
-				insert_begining_conf_files(args[0],args[1])
-			elif key == "modify":
-				print("modify args received are : ", data[key])
-			else:
-				print("unknown parameter {} - {}".format(key,data[key]))
+		elif key == "insert":
+			args=data[key]
+			print("Insert arg received are : ", data[key])
+			insert_begining_conf_files(args[0],args[1])
+		elif key == "modify":
+			print("modify args received are : ", data[key])
+		else:
+			print("unknown parameter {} - {}".format(key,data[key]))
+
 
 
 ####################################################
@@ -149,4 +180,48 @@ def import_package_file():
 
 #import_package_file()
 #insert_begining_conf_files('/tmp/file',"ajout en ligne 1 via argument")
-replace_line_file("/tmp/file","ligne 1","ligne 0")
+#replace_line_file("/tmp/file","ligne 1","ligne 0")
+#donnees=import_yaml_file('config_files/items.yaml')
+#conf_db=donnees.get('commands')
+#print(conf_db)
+#print(donnees)
+#main(donnees)
+#data_base(donnees,"show grants;")
+
+### Check for a second arguments before anything ###
+if len(sys.argv) != 2:
+	raise ValueError("Please provide path to yaml file as argument, usage '{} path' ".format(sys.argv[0]))
+
+### Import YAML file content into yaml_data variable ###
+yaml_data=import_yaml_file(sys.argv[1])
+print(yaml_data)
+
+### Retrieve package list in YAML file and call the main package management process ###
+
+package_list=yaml_data.get('packages')
+install_package(package_list)
+
+
+
+### Getting database configuration from YAML and call the main Database process 'data_base'  ###
+
+db_info=yaml_data.get('database').get('database')
+query=yaml_data.get('database').get('query')
+data_base(db_info,query)
+
+
+### Modify config files for apache and requisite 
+#modif_infos=yaml_data.get('insert')
+#print(modif_infos)
+
+### Activate modules and run commands  ###
+apache_cmd=yaml_data.get('commands').get('apache2')
+print(apache_cmd)
+
+
+#install magento (copy from git, composer install and run setup)
+
+
+
+
+>>>>>>> master

@@ -1,5 +1,18 @@
-#List of required packages
+#List of the database params
+database:
+ database:   #variables to connect the DB
+  ip_address: 192.168.1.7
+  db_admin: magento
+  db_password: magento
+  db_name: magento
+  db_port: 3306
+ query:  #queries to configure and create the DB
+  - "create database magento;"
+  - "create user magento@localhost identified by 'magento';"
+  - "grant all privilege on magento.* to magento@localhost identified by 'magento';"
+  - "flush privileges;"
 
+#List of required packages case sensitive with apt package name
 packages:
  - apache2
  - mariadb-server
@@ -16,10 +29,34 @@ packages:
  - php-zip
  - openjdk-11-jdk
  - composer
+# - libariadbclient-dev
 
-#config for database, comes with ip_adress, db_username, db_password, db_name
-database:
- - localhost
- - magento
- - magento
- - magento
+commands:
+ ssl:
+  - mkdir -p /etc/apache2/ssl
+  - openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/apache2/ssl/apache.key -out /etc/apache2/ssl/apache.crt --config config_files/cert.cnf
+  - chmod -R 600 /etc/apache2/ssl
+ apache2:
+  - a2enmod ssl
+  - a2ensite default-ssl
+  - a2enmod rewrite
+  - a2enmod expires
+  - a2enmod headers
+  - a2enmod proxy
+  - a2enmod proxy_html
+ elasticsearch:
+  - wget -P /tmp/elasticsearch/ https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-7.10.0-amd64.deb
+  - wget -P /tmp/elasticsearch/ https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-7.10.0-amd64.deb.sha512
+  - shasum -a 512 -c /tmp/elasticsearch/elasticsearch-7.10.0-amd64.deb
+  - dpkg -i /tmp/elasticsearch/elasticsearch-7.10.0-amd64.deb
+  - systemct start elasticsearch
+  - systemctl daemon-reload
+  - systemctl enable elasticsearch.service
+  - systemctl restart apache2
+
+insert:
+ /tmp/file:
+  - "ligne via le fichier yaml"
+  - "une autre ligne"
+ /tmp/file2:
+  - "file 2 line"

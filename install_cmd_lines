@@ -21,6 +21,10 @@ Edit /etc/php/7.3/apache2/php.ini
 	date.timezone = Europe/Paris
 	memory_limit=4G
 	opache.save_comments=1 
+#Edit /etc/php/7.3/apache2/php.ini
+	date.timezone = Europe/Paris
+	memory_limit=4G
+	opcache.save_comments=1 
 
 
 command a2enmod ssl
@@ -30,6 +34,7 @@ command openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/apache2
 command chmod 600 /etc/apache2/ssl/*
 
 edit /etc/apache2/sites-enabled/default-ssl.conf
+#edit /etc/apache2/sites-enabled/default-ssl.conf
 	SSLCertificateFile /etc/apache2/ssl/apache.crt
 	SSLCertificateKeyFile /etc/apache2/ssl/apache.key
 	<Directory /var/www/html>
@@ -44,8 +49,6 @@ command a2enmod proxy_html
 install openjdk-11-jdk #version a controler
 
 
-
-command mysql_secure_installation
 
 mysql create user magento
 	create database magento
@@ -84,7 +87,6 @@ Service restart apache
 
 #check if ok with :   curl -i http://localhost:8080/_cluster/health
 
-################################""
 #via composer
 #install composer
 #composer create-project...
@@ -97,7 +99,6 @@ Service restart apache
 #command tar -xvzf mangento.tar -C /var/www/html/magento
 	#passer /bin/mangento en executable sinon	pas d'exe dans /magento/bin
 
-#######################################
 
 
 Probleme a résoudre, acquisition du logiciel, clone git ?
@@ -135,8 +136,6 @@ chown
 	--base-url
 
 command ./magento cron:install
-
-
 ###########################
 Librairies Python utiles
 

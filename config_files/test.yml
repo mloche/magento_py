@@ -1,0 +1,16 @@
+packages:
+ - nano
+ - sudo
+ - vim
+ - openssh-server
+
+database:
+ database: 
+  ip_address: 192.168.1.7
+  db_admin: magento
+  db_password: magento
+  db_name: magento
+  db_port: 3306
+ query:
+  - "show grants;"
+  - "show tables;"

@@ -1,0 +1,39 @@
+#List of the database params
+database:
+ ip_address: 192.168.1.6
+ db_admin: magento
+ db_password: magento
+ db_name: magento
+
+packages:
+ - apache2
+ - mariadb-server
+ - php-mysql
+ - libapache2-mod-php
+ - git
+ - php-bcmath
+ - php-curl
+ - php-xml
+ - php-gd
+ - php-mbstring
+ - php-intl
+ - php-soap
+ - php-zip
+ - openjdk-11-jdk
+ - composer
+# - libariadbclient-dev
+
+commands:
+ ssl:
+  - mkdir -p /etc/apache2/ssl
+  - openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/apache2/ssl/apache.key -out /etc/apache2/ssl/apache.crt --config config_files/cert.cnf
+  - chmod -R 600 /etc/apache2/ssl
+ apache2:
+  - a2enmod ssl
+
+insert:
+ /tmp/file:
+  - "ligne via le fichier yaml"
+  - "une autre ligne"
+ /tmp/file2:
+  - "file 2 line"

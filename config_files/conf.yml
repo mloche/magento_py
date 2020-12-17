@@ -1,0 +1,43 @@
+packages:
+ - apache2
+ - mariadb-server
+ - php-mysql
+ - git
+ - libapache2-mod-php
+ - php-bcmath
+ - php-curl
+ - php-xml
+ - php-gd
+ - php-mbstring
+ - php-intl
+ - php-soap
+ - php-zip
+ - openjdk-11-jdk
+ - composer
+# - libmariadbclient-dev
+
+
+#config for database, comes with ip_address, db_username, db_password, db_name
+database: 
+ ip_address: 192.168.1.6
+ db_admin: magento
+ db_password: magento
+ db_name: magento
+
+commands:
+ - ssl:
+  - mkdir -p /etc/apache2/ssl # '-p' arg takes care of existing folder case
+  - openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/apache2/ssl/apache.key -out /etc/apache2/ssl/apache.crt --config config_files/cert.cnf
+  - chmod -R 600 /etc/apache2/ssl
+ - apache2:
+  - a2enmod ssl
+ - elasticsearch: 
+  - wget https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-7.10.0-amd64.deb -P /tmp/
+  - wget https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-7.10.0-amd64.deb.sha512 -P /tmp/
+  - shasum -a 512 -c /tmp/elasticsearch-7.10.0-amd64.deb.sha512
+  - dpkg -i /tmp/elasticsearch-7.10.0-amd64.deb
+
+
+insert:
+ - /tmp/file
+ - "ligne via le fichier yaml"

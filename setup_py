@@ -1,0 +1,210 @@
+#!/bin/python3
+import apt
+import sys
+import yaml
+# import os #depreciated must use subprocess
+import pymysql as mariadb
+import subprocess
+
+
+print("#####################################\n###### {} IS STARTING ###### \n ".format(sys.argv[0]))
+
+####connecting to database returns connector 
+def connect_database(db_serv,db_admin,db_pass,db_name):
+	conn=0
+	try:
+		conn = mariadb.connect(host=db_serv,user=db_admin,password=db_pass,database=db_name,port=3306)
+	except mariadb.Error as e:
+		print("error connecting to mariadb platform: {}".format(e))
+	return(conn)
+
+#query database, requires connector and query, returns query result
+def database_query(conn,query):
+	cursor = conn.cursor()
+	cursor.execute(query)
+	data_query = cursor.fetchone()
+	conn.close()
+	return(data_query)
+
+
+
+### Function installing the package given as variable #######
+def install_package(pkg_name):
+	print("Entering install_package and updating cache, please wait !")
+	pkg_cache=apt.Cache()
+	pkg_cache.update()
+	pkg_cache.open(None)
+	pkg_cache.upgrade()
+#	pkg_name = input("Type package you want for install of check if installed \n")
+	try:
+		inst_pkg = pkg_cache[pkg_name]
+		print("inst_package = " + pkg_name)
+		if inst_pkg.is_installed:
+			print("{} already installed".format(pkg_name))
+		else:
+			inst_pkg.mark_install()
+			try:
+				print("Installing ' " + pkg_name + " ' please wait")
+				pkg_cache.commit()
+			except arg:
+				print(" >>", sys.stderr, "Sorry, package install failed [{err}]".format(err=str(arg)))
+	except KeyError:
+		print(" Package ' " + pkg_name + " '  was not found")
+
+#using bash command given as arg 
+def command_use(cmd):
+	print("received commands in command_use are {} ".format(cmd))
+	value=0
+	max=len(cmd)
+#	completed=subprocess.run(['ls', '-l'])
+#	print("return code : ", completed.returncode)
+	for value in range(0,max):
+#		print(cmd[value])
+		try:
+			try_cmd=cmd[value]
+			try_cmd=try_cmd.split()
+#			try_cmd="md"
+#			print("try_cmd after split  :" , try_cmd)
+#			os.system(try_cmd)
+			completed= subprocess.run(try_cmd)
+			print("Result for command {} : {} ".format(cmd[value], completed.returncode))
+		except subprocess.CalledProcessError as err:
+			print("Error using command : ", err)
+
+#adding lines in begining of conf file
+def insert_begining_conf_files(file, added_text):
+	with open(file, "r+") as file: 
+#		pos_begin=file.tell()
+#		print(pos_begin)
+#	file = open('/tmp/file', 'a+')
+#		file.seek(0, 0)
+		#pos_end=file.tell()
+		#print(pos_end)
+		file.write(" \n")
+		file.seek(0)
+		print(file.tell())
+		file.write(added_text + "\n")
+		print("end of modif file loop")
+#	file.close()
+
+#Replacing line from file ton another
+
+def replace_line_file(file,string,new_string):
+	print("received replace file args : ", file, string, new_string)
+	with open(file,"r") as read_file:
+		rlines=read_file.readlines()
+		print("rlines :" , rlines)
+#		temp=rlines[0].find(string)
+#		print("temp : ", temp)
+		for i in range(0,len(rlines)):
+			if rlines[i].find(string) != "-1":
+				rlines[i]=new_string
+#				temp=rlines[i].find(string)
+				print("temp : ", rlines[i])
+			else:
+				rlines[i]=rlines[i]
+	with open(file, "w") as write_file:
+		for wlines in rlines:
+			write_file.write(wlines + "\n")
+	print("end of replace loop")
+
+###### Function reading the yaml file and extracting the data to call
+###### each function with its arguments
+
+def import_yaml_file(file):
+	print("Starting Import yaml")
+	try:
+		with open(file) as read_file:
+			data = yaml.load(read_file, Loader=yaml.FullLoader)
+			print("Data read are : {}".format(data))
+			return(data)
+	except :
+		print("Could not open {} file".format(file))
+
+
+def main(data):
+		for key in data.keys():
+			if key == "packages":
+				print("Installing {} -  {}" .format(key,data[key]))
+				package_list=data[key]
+				value=0
+				max=len(package_list)
+				print("valeur de Max : " + str(max))
+				for value in range(0,max):
+					print(package_list[value])
+#					install_package(package_list[value])
+
+def data_base(data,query):
+	for key in data.keys():	
+		if key == "database":
+#			print("value for {} - {}".format(key,data[key]))
+			db_info=data[key]
+#control			print(type(db_info))
+			conn=connect_database(db_info["ip_address"],db_info["db_admin"],db_info["db_password"],db_info["db_name"])
+			query="show grants;" #testing purpose
+			donnees=database_query(conn,query)
+			print(donnees)
+		else:
+			continue
+
+def temp(data):			
+	for key in data.keyx():	
+		if key == "commands":
+			bash_cmd=data[key]
+			print("the bash_cmd is {}".format(type(bash_cmd)))
+			print("read commands are {} ".format(bash_cmd))
+			command_use(bash_cmd)
+#				for folder in bash_cmd.key():
+#					print(folder)
+#				print("Read command for file {} is {}".format(key,data[key]))
+		elif key == "insert":
+			args=data[key]
+			print("Insert arg received are : ", data[key])
+			insert_begining_conf_files(args[0],args[1])
+		elif key == "modify":
+			print("modify args received are : ", data[key])
+		else:
+			print("unknown parameter {} - {}".format(key,data[key]))
+
+
+####################################################
+#              MAIN PROGRAM                        #
+####################################################
+
+#import_package_file()
+#insert_begining_conf_files('/tmp/file',"ajout en ligne 1 via argument")
+#replace_line_file("/tmp/file","ligne 1","ligne 0")
+#donnees=import_yaml_file('config_files/items.yaml')
+#conf_db=donnees.get('commands')
+#print(conf_db)
+#print(donnees)
+#main(donnees)
+#data_base(donnees,"show grants;")
+
+#Check for arguments before anything
+if len(sys.argv) != 2:
+	raise ValueError("Please provide path to yaml file as argument, usage '{} path' ".format(sys.argv[0]))
+#import file content to donnees
+yaml_data=import_yaml_file(sys.argv[1])
+#print(yaml_data)
+#need to install all required packages
+
+
+#create and configure database
+db_infos=yaml_data.get('database')
+print(db_infos)
+
+#modify config files for apache and requisite 
+modif_infos=yaml_data.get('insert')
+print(modif_infos)
+
+#activate modules and run commands
+apache_infos=yaml_data.get('commands').get('apache2')
+print(apache_infos)
+
+
+#install magento (copy from git, composer install and run setup)
+
+
+
+

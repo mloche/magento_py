@@ -14,3 +14,17 @@ database:
  query:
   - "show grants;"
   - "show tables;"
+
+files:
+ apache:
+  owner: mloche
+  file: test.file
+  string: ";ligne"
+  new_string: "LIGNE" 
+
+commands:
+ apache2:
+  - a2enmod ssl
+  - a2enmod proxy
+ test:
+  - echo "boop"

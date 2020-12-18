@@ -5,7 +5,8 @@ import yaml
 # import os #depreciated must use subprocess
 import pymysql as mariadb
 import subprocess
-
+import re
+import fileinput
 
 print("#####################################\n###### {} IS STARTING ###### \n ".format(sys.argv[0]))
 
@@ -47,52 +48,44 @@ def data_base(db_info,query):
 ### Function installing the package given as variable #######
 def install_package(package_list):
 	print("Updating cache and installing package, please wait !")
-	print("package list received : ",package_list)
 	pkg_cache=apt.Cache()
 	pkg_cache.update()
 	pkg_cache.open(None)
 	pkg_cache.upgrade()
 	value=0
 	max=len(package_list)
-#	print(max)
-#	print("package 2", package_list[max-1])
 	for value in range(0,max):
-#	pkg_name = input("Type package you want for install of check if installed \n")
 		try:
 			inst_pkg = pkg_cache[package_list[value]]
-#			print("inst_package = " , inst_pkg)
 			if inst_pkg.is_installed:
 				print("{} already installed".format(inst_pkg))
 			else:
 				inst_pkg.mark_install()
 				try:
-#				print("Installing ' " + pkg_name + " ' please wait")
 					pkg_cache.commit()
 				except arg:
 					print(" >>", sys.stderr, "Sorry, package install failed [{err}]".format(err=str(arg)))
 		except KeyError:
 			print(" Package was not found" , inst_pkg[value])
 
-#using bash command given as arg 
+
+### using bash command given as arg  ### 
 
 def command_use(cmd):
-	print("received commands in command_use are {} ".format(cmd))
+#control	print("received commands in command_use are {} ".format(cmd))
 	value=0
 	max=len(cmd)
-#	completed=subprocess.run(['ls', '-l'])
-#	print("return code : ", completed.returncode)
 	for value in range(0,max):
-#		print(cmd[value])
+#control		print(cmd[value])
 		try:
 			try_cmd=cmd[value]
 			try_cmd=try_cmd.split()
-#			try_cmd="md"
-			print("try_cmd after split  :" , try_cmd)
-#			os.system(try_cmd)
 			completed= subprocess.run(try_cmd)
-			print("Result for command {} : {} ".format(cmd[value], completed.returncode))
+#control			print("Result for command {} : {} ".format(cmd[value], completed.returncode))
 		except subprocess.CalledProcessError as err:
 			print("Error using command : ", err)
+
+
 
 #adding lines in begining of conf file
 def insert_begining_conf_files(file, added_text):
@@ -110,26 +103,35 @@ def insert_begining_conf_files(file, added_text):
 		print("end of modif file loop")
 #	file.close()
 
-#Replacing line from file ton another
+### Replacing string from file by new_string using re.sub ###
 
-def replace_line_file(file,string,new_string):
-	print("received replace file args : ", file, string, new_string)
-	with open(file,"r") as read_file:
-		rlines=read_file.readlines()
-		print("rlines :" , rlines)
-#		temp=rlines[0].find(string)
-#		print("temp : ", temp)
-		for i in range(0,len(rlines)):
-			if rlines[i].find(string) != "-1":
-				rlines[i]=new_string
-#				temp=rlines[i].find(string)
-				print("temp : ", rlines[i])
-			else:
-				rlines[i]=rlines[i]
-	with open(file, "w") as write_file:
-		for wlines in rlines:
-			write_file.write(wlines + "\n")
-	print("end of replace loop")
+def replace_line_regex(file,string,new_string):
+	print("received replace file regex args : ", file, string, new_string)
+	try:
+		with open(file,"r+") as read_file:
+			file_content=read_file.read()
+			findstring=re.compile(string)
+			file_content=findstring.sub(new_string,file_content,1)
+			read_file.seek(0)
+			read_file.truncate()
+			read_file.write(file_content)
+
+	except:
+		print("Replacement failed !")
+
+
+
+### replace the string in file with new_string, requires to check ACL on file after execution ###
+### Method not kept for the script ###
+def replace_fileinput(file,string,new_string,owner):
+	for line in fileinput.input(file, inplace=True):
+		line = line.replace(string,new_string)
+		sys.stdout.write(line)
+		subprocess.run(['chown',owner,file])
+
+
+
+
 
 ###### Function reading the yaml file and extracting the data to call
 ###### each function with its arguments
@@ -148,41 +150,9 @@ def import_yaml_file(file):
 
 
 
-
-def temp(data):			
-	for key in data.keyx():	
-		if key == "commands":
-			bash_cmd=data[key]
-			print("the bash_cmd is {}".format(type(bash_cmd)))
-			print("read commands are {} ".format(bash_cmd))
-			command_use(bash_cmd)
-#				for folder in bash_cmd.key():
-#					print(folder)
-#				print("Read command for file {} is {}".format(key,data[key]))
-		elif key == "insert":
-			args=data[key]
-			print("Insert arg received are : ", data[key])
-			insert_begining_conf_files(args[0],args[1])
-		elif key == "modify":
-			print("modify args received are : ", data[key])
-		else:
-			print("unknown parameter {} - {}".format(key,data[key]))
-
-
-
 ####################################################
 #              MAIN PROGRAM                        #
 ####################################################
-
-#import_package_file()
-#insert_begining_conf_files('/tmp/file',"ajout en ligne 1 via argument")
-#replace_line_file("/tmp/file","ligne 1","ligne 0")
-#donnees=import_yaml_file('config_files/items.yaml')
-#conf_db=donnees.get('commands')
-#print(conf_db)
-#print(donnees)
-#main(donnees)
-#data_base(donnees,"show grants;")
 
 ### Check for a second arguments before anything ###
 if len(sys.argv) != 2:
@@ -190,33 +160,50 @@ if len(sys.argv) != 2:
 
 ### Import YAML file content into yaml_data variable ###
 yaml_data=import_yaml_file(sys.argv[1])
-print(yaml_data)
+#control print(yaml_data)
 
 ### Retrieve package list in YAML file and call the main package management process ###
-
-#OK package_list=yaml_data.get('packages')
-#OK install_package(package_list)
-
+"""
+package_list=yaml_data.get('packages')
+install_package(package_list)
+"""
 
 
 ### Getting database configuration from YAML and call the main Database process 'data_base'  ###
-
-#OK db_info=yaml_data.get('database').get('database')
-#OK query=yaml_data.get('database').get('query')
-#OK data_base(db_info,query)
-
+"""
+db_info=yaml_data.get('database').get('database')
+query=yaml_data.get('database').get('query')
+data_base(db_info,query)
+"""
 
 ### Modify config files for apache and requisite 
 #modif_infos=yaml_data.get('insert')
 #print(modif_infos)
 
 ### Activate modules and run commands  ###
-apache_cmd=yaml_data.get('commands').get('apache2')
-print(apache_cmd)
-#command_use(apache_cmd)
+"""
+commands=yaml_data.get('commands')
+for key in commands.keys():
+#	print(key)
+#	print(commands[key])
+	command_use(commands[key])
+"""
 
 #install magento (copy from git, composer install and run setup)
 
 
 
+
+### Modify file function ###
+"""
+modif_data=yaml_data.get('files')
+print(modif_data)
+#needs loops over file sections
+file=modif_data.get('apache').get('file')
+print("file :",file)
+string=";ligne"
+new_string="LIGNE SANS VIRGULE"
+owner="mloche:mloche" 
+#replace_line_regex(file,string,new_string)
+"""
 

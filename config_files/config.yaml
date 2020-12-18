@@ -54,9 +54,15 @@ commands:
   - systemctl enable elasticsearch.service
   - systemctl restart apache2
 
-insert:
- /tmp/file:
-  - "ligne via le fichier yaml"
-  - "une autre ligne"
- /tmp/file2:
-  - "file 2 line"
+files:
+ apache:
+  owner: 
+  file: 
+  string: 
+  new_string:
+ php_tz:
+  owner: root
+  file: "/etc/php/7.3/apache2/php.ini"
+  string: ";date.timezone ="
+  new_string: "date.timezone= Europe/Paris"
+ 

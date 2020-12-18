@@ -92,10 +92,6 @@ def command_use(cmd):
 			completed= subprocess.run(try_cmd)
 			print("Result for command {} : {} ".format(cmd[value], completed.returncode))
 		except subprocess.CalledProcessError as err:
-
-			print("Error : ", err)
-
-
 			print("Error using command : ", err)
 
 #adding lines in begining of conf file
@@ -198,16 +194,16 @@ print(yaml_data)
 
 ### Retrieve package list in YAML file and call the main package management process ###
 
-package_list=yaml_data.get('packages')
-install_package(package_list)
+#OK package_list=yaml_data.get('packages')
+#OK install_package(package_list)
 
 
 
 ### Getting database configuration from YAML and call the main Database process 'data_base'  ###
 
-db_info=yaml_data.get('database').get('database')
-query=yaml_data.get('database').get('query')
-data_base(db_info,query)
+#OK db_info=yaml_data.get('database').get('database')
+#OK query=yaml_data.get('database').get('query')
+#OK data_base(db_info,query)
 
 
 ### Modify config files for apache and requisite 
@@ -217,11 +213,10 @@ data_base(db_info,query)
 ### Activate modules and run commands  ###
 apache_cmd=yaml_data.get('commands').get('apache2')
 print(apache_cmd)
-
+#command_use(apache_cmd)
 
 #install magento (copy from git, composer install and run setup)
 
 
 
 
->>>>>>> master

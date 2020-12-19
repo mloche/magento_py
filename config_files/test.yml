@@ -19,8 +19,8 @@ files:
  apache:
   owner: mloche
   file: test.file
-  string: ";ligne"
-  new_string: "LIGNE" 
+  string: ";ligne1\n;ligne2\n;ligne3\n\tligne4"
+  new_string: "LIGNE 1\n\tLIGNE\t2\nLIGNE 3\n\t LIGNE 4\n" 
 
 commands:
  apache2:

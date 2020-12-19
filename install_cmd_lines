@@ -1,4 +1,3 @@
-#packages et conf requis
 
 install apache2
 -version 2.4.38
@@ -17,13 +16,12 @@ install php-zip
 install php-mysql
 
 
-Edit /etc/php/7.3/apache2/php.ini
-	date.timezone = Europe/Paris
-	memory_limit=4G
-	opache.save_comments=1 
 #Edit /etc/php/7.3/apache2/php.ini
+	;date.timezone =
 	date.timezone = Europe/Paris
+	memory_limit = 128M
 	memory_limit=4G
+	;opcache.save_comments=1
 	opcache.save_comments=1 
 
 
@@ -33,10 +31,13 @@ command mkdir /etc/apache2/ssl
 command openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/apache2/ssl/apache.key -out /etc/apache2/ssl/apache.crt
 command chmod 600 /etc/apache2/ssl/*
 
-edit /etc/apache2/sites-enabled/default-ssl.conf
 #edit /etc/apache2/sites-enabled/default-ssl.conf
+	                    /etc/ssl/certs/ssl-cert-snakeoil.pem 
 	SSLCertificateFile /etc/apache2/ssl/apache.crt
+                               /etc/ssl/private/ssl-cert-snakeoil.key
 	SSLCertificateKeyFile /etc/apache2/ssl/apache.key
+	</IfModule>
+
 	<Directory /var/www/html>
 		AllowOverride All
 	</Directory>
@@ -49,12 +50,15 @@ command a2enmod proxy_html
 install openjdk-11-jdk #version a controler
 
 
+#pas utile
+command mysql_secure_installation
 
 mysql create user magento
 	create database magento
 	grant all on magento to magento
 
 edit /etc/mysql/mariadb.conf.d/50-server.cnf
+	[server]
 	[server]
 	explicit_defaults_for_timestamp=1
 
@@ -77,15 +81,15 @@ sudo /bin/systemctl enable elasticsearch.service
 #configure elasticsearch proxy for apache2
 
 edit /etc/apache2/sites-available/000-default.conf
-	listen 8080
-	<VirtualHost *:8080>
-		ProxyPass "/" "http://localhost:9200"
-		ProxyPassReverse "/" "http://localhost:9200"
-	</VirtualHost>
+	<VirtualHost *:80>
+
+listen 8080\n<VirtualHost *:8080>\n\tProxyPass "/" "http://localhost:9200"\n\tProxyPassReverse "/" "http://localhost:9200"\n
+
 
 Service restart apache
 
 #check if ok with :   curl -i http://localhost:8080/_cluster/health
+
 
 #via composer
 #install composer
@@ -101,12 +105,12 @@ Service restart apache
 
 
 
+
 Probleme a résoudre, acquisition du logiciel, clone git ?
 
 cd /var/www/html/
 git clone https://github.com/magento/magento2.git
-git checkout tag/2.4.1
-git pull
+checkout -tag
 #verifier la version ou branche téléchargée pour être sur la latest
 
 
@@ -136,7 +140,3 @@ chown
 	--base-url
 
 command ./magento cron:install
-###########################
-Librairies Python utiles
-
-apt_pkg

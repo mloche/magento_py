@@ -55,14 +55,32 @@ commands:
   - systemctl restart apache2
 
 files:
- apache:
-  owner: 
-  file: 
-  string: 
-  new_string:
+ apache_ssl_cert:
+  file: "/etc/apache2/sites-enabled/default-ssl.conf" 
+  string: "/etc/ssl/certs/ssl-cert-snakeoil.pem"
+  new_string: "/etc/apache2/ssl/apache.crt"
+ apache_ssl_key:
+  file: "/etc/apache2/sites-enabled/default-ssl.conf"
+  string: "/etc/ssl/certs/ssl-cert-snakeoil.pem"
+  new_string: "/etc/apache2/ssl/apache.key"
  php_tz:
-  owner: root
   file: "/etc/php/7.3/apache2/php.ini"
   string: ";date.timezone ="
-  new_string: "date.timezone= Europe/Paris"
- 
+  new_string: "date.timezone = Europe/Paris"
+ php_mem:
+  file: "/etc/php/7.3/apache2/php.ini"
+  string: "memory_limit = 128M"
+  new_string: "memory_limit = 4G"
+ php_op:
+  file: "/etc/php/7.3/apache2/php.ini"
+  string: ";opcache.save.comments=1"
+  new_string: "opcache.save.comments=1"
+ mariadb:
+  file: "/etc/mysql/mariadb.conf.d/50-server.cnf
+  string: "[server]"
+  new_string: "[server]\nexplicit_defaults_for_timestamp=1\n"
+ apache_vhost_proxy:
+  file: "/etc/apache2/sites-available/000-default.conf"
+  string: "<VirtualHost *:80>"
+  new_string: "Listen 8080\n<VirtualHost *:8080>\n\tProxyPass "/" "http://localhost:9200"\n\tProxyPassReverse "/" "http://localhost:9200"\n"
+  

@@ -2,7 +2,6 @@
 import apt
 import sys
 import yaml
-# import os #depreciated must use subprocess
 import pymysql as mariadb
 import subprocess
 import re
@@ -45,7 +44,7 @@ def data_base(db_info,query):
 
 
 
-### Function installing the package given as variable #######
+### Function installing the package list given as variable #######
 def install_package(package_list):
 	print("Updating cache and installing package, please wait !")
 	pkg_cache=apt.Cache()
@@ -69,7 +68,7 @@ def install_package(package_list):
 			print(" Package was not found" , inst_pkg[value])
 
 
-### using bash command given as arg  ### 
+### using bash command list given as arg  ### 
 
 def command_use(cmd):
 #control	print("received commands in command_use are {} ".format(cmd))
@@ -111,6 +110,7 @@ def replace_line_regex(file,string,new_string):
 		with open(file,"r+") as read_file:
 			file_content=read_file.read()
 			findstring=re.compile(string)
+#			findstring=string
 			file_content=findstring.sub(new_string,file_content,1)
 			read_file.seek(0)
 			read_file.truncate()
@@ -133,8 +133,7 @@ def replace_fileinput(file,string,new_string,owner):
 
 
 
-###### Function reading the yaml file and extracting the data to call
-###### each function with its arguments
+### Function reading the yaml file and extracting the data ####
 
 def import_yaml_file(file):
 	print("Starting Import yaml")
@@ -195,15 +194,16 @@ for key in commands.keys():
 
 
 ### Modify file function ###
-"""
+
 modif_data=yaml_data.get('files')
 print(modif_data)
 #needs loops over file sections
-file=modif_data.get('apache').get('file')
-print("file :",file)
-string=";ligne"
-new_string="LIGNE SANS VIRGULE"
-owner="mloche:mloche" 
-#replace_line_regex(file,string,new_string)
-"""
+apache_file=modif_data.get('apache')
+print("file :",apache_file)
+file=apache_file.get('file')
+string=apache_file.get('string')
+new_string=apache_file.get('new_string')
+
+replace_line_regex(file,string,new_string)
+
 

@@ -1,50 +1,21 @@
 #!/bin/python3
+### Imports required module including custom modules in the ./modules/ folder ###
+
+#Standard modules#
 import apt
 import sys
+sys.path.append('./modules/')
 import yaml
-import pymysql as mariadb
 import subprocess
-import re
 import fileinput
+#Custom modules#
+import database as mariadb
+import files
 
 print("#####################################\n###### {} IS STARTING ###### \n ".format(sys.argv[0]))
 
-### Connecting to database returns connector ### 
-def connect_database(db_serv,db_admin,db_pass,db_name,db_port):
-	try:
-		conn = mariadb.connect(host=db_serv,user=db_admin,password=db_pass,database=db_name,port=db_port)
-	except mariadb.Error as error:
-		print("error connecting to mariadb platform: {}".format(error))
-	return(conn)
 
-### Query database, requires connector and query, returns query result ###
-def database_query(conn,query):
-	try:
-		cursor = conn.cursor()
-		cursor.execute(query)
-		data_query = cursor.fetchone()
-	except:
-		print("could not query {} with {}".format(conn,query))
-	return(data_query)
-
-### Connects to the database using the db_info list and the query list, execute querys ###
-def data_base(db_info,query):
-#control purpose	print("received {} and {}".format(db_info,query))
-	try:
-		db_conn=connect_database(db_info["ip_address"],db_info["db_admin"],db_info["db_password"],db_info["db_name"],db_info['db_port'])
-		value =0
-		max=len(query)
-		for value in range(0,max):
-			query_result=database_query(db_conn,query[value])
-			print(query_result)
-	except:
-		print("could not query {} to database {}".format(query,db_info))
-	print("Releasing the database")
-	db_conn.close()
-
-
-
-### Function installing the package list given as variable #######
+### Function installing the package list given as variable ###
 def install_package(package_list):
 	print("Updating cache and installing package, please wait !")
 	pkg_cache=apt.Cache()
@@ -86,65 +57,22 @@ def command_use(cmd):
 
 
 
-#adding lines in begining of conf file
-def insert_begining_conf_files(file, added_text):
-	with open(file, "r+") as file: 
-#		pos_begin=file.tell()
-#		print(pos_begin)
-#	file = open('/tmp/file', 'a+')
-#		file.seek(0, 0)
-		#pos_end=file.tell()
-		#print(pos_end)
-		file.write(" \n")
-		file.seek(0)
-		print(file.tell())
-		file.write(added_text + "\n")
-		print("end of modif file loop")
-#	file.close()
-
-### Replacing string from file by new_string using re.sub ###
-
-def replace_line_regex(file,string,new_string):
-	print("received replace file regex args : ", file, string, new_string)
-	try:
-		with open(file,"r+") as read_file:
-			file_content=read_file.read()
-			findstring=re.compile(string)
-#			findstring=string
-			file_content=findstring.sub(new_string,file_content,1)
-			read_file.seek(0)
-			read_file.truncate()
-			read_file.write(file_content)
-
-	except:
-		print("Replacement failed !")
-
-
-
-### replace the string in file with new_string, requires to check ACL on file after execution ###
-### Method not kept for the script ###
-def replace_fileinput(file,string,new_string,owner):
-	for line in fileinput.input(file, inplace=True):
-		line = line.replace(string,new_string)
-		sys.stdout.write(line)
-		subprocess.run(['chown',owner,file])
-
-
-
 
 
 ### Function reading the yaml file and extracting the data ####
 
 def import_yaml_file(file):
-	print("Starting Import yaml")
-	try:
-		with open(file) as read_file:
-			data = yaml.load(read_file, Loader=yaml.FullLoader)
-#			print("Data read are : {}".format(data))
-			return(data)
-	except :
-		print("Could not open {} file".format(file))
-
+	if isinstance(file, str):
+		print("Starting Import yaml")
+		try:
+			with open(file) as read_file:
+				data = yaml.load(read_file, Loader=yaml.FullLoader)
+#				print("Data read are : {}".format(data))
+				return(data)
+		except :
+			print("Could not open {} file".format(file))
+	else:
+		print("Could not open file : {} is not a valid file or path".format(file))
 
 
 
@@ -155,7 +83,7 @@ def import_yaml_file(file):
 
 ### Check for a second arguments before anything ###
 if len(sys.argv) != 2:
-	raise ValueError("Please provide path to yaml file as argument, usage '{} path' ".format(sys.argv[0]))
+	raise ValueError("Please provide path to yaml file as argument, usage : {} path ".format(sys.argv[0]))
 
 ### Import YAML file content into yaml_data variable ###
 yaml_data=import_yaml_file(sys.argv[1])
@@ -168,16 +96,16 @@ install_package(package_list)
 """
 
 
-### Getting database configuration from YAML and call the main Database process 'data_base'  ###
+### Getting database configuration from YAML and call the module Database aliased as mariadb  ###
 """
 db_info=yaml_data.get('database').get('database')
 query=yaml_data.get('database').get('query')
-data_base(db_info,query)
+mariadb._query_list(db_info,query)
 """
 
 ### Modify config files for apache and requisite 
 #modif_infos=yaml_data.get('insert')
-#print(modif_infos)
+#files._insert_top(file,string)
 
 ### Activate modules and run commands  ###
 """
@@ -194,7 +122,7 @@ for key in commands.keys():
 
 
 ### Modify file function ###
-
+"""
 modif_data=yaml_data.get('files')
 print(modif_data)
 #needs loops over file sections
@@ -204,6 +132,9 @@ file=apache_file.get('file')
 string=apache_file.get('string')
 new_string=apache_file.get('new_string')
 
-replace_line_regex(file,string,new_string)
+files._replace_string(file,string,new_string)
+
+"""
+
 
 

@@ -16,7 +16,7 @@ def _connect(db_serv,db_admin,db_pass,db_name,db_port=3306):
 		except mariadb.Error as error:
 			print("error connecting to mariadb platform: {}".format(error))
 	else:
-		print("Error invalid values given, for CONNECTING TO A DATABASE")
+		sys.exit("Error invalid values given, for CONNECTING TO A DATABASE. Quit")
 	return(conn)
 
 ### Query database, requires connector and query, returns query result ###

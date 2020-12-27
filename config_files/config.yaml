@@ -29,6 +29,7 @@ packages:
  - php-zip
  - openjdk-11-jdk
  - composer
+ - curl
 # - libariadbclient-dev
 
 commands:
@@ -36,7 +37,7 @@ commands:
   - mkdir -p /etc/apache2/ssl
   - openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/apache2/ssl/apache.key -out /etc/apache2/ssl/apache.crt --config config_files/cert.cnf
   - chmod -R 600 /etc/apache2/ssl
- apache2:
+ apache2_mods:
   - a2enmod ssl
   - a2ensite default-ssl
   - a2enmod rewrite
@@ -52,7 +53,12 @@ commands:
   - systemct start elasticsearch
   - systemctl daemon-reload
   - systemctl enable elasticsearch.service
+ apache2_end:
+  - chown -R www-data:www-data /var/www/html
   - systemctl restart apache2
+ magento_inst_git:
+  - git -C /var/www.html/ -b 2.4.1 clone https://github.com/magento/magento2
+  - sudo composer install -d /var/www/html/magento2 
 
 files:
  apache_ssl_cert:
@@ -76,11 +82,14 @@ files:
   string: ";opcache.save.comments=1"
   new_string: "opcache.save.comments=1"
  mariadb:
-  file: "/etc/mysql/mariadb.conf.d/50-server.cnf
+  file: "/etc/mysql/mariadb.conf.d/50-server.cnf"
   string: "[server]"
   new_string: "[server]\nexplicit_defaults_for_timestamp=1\n"
  apache_vhost_proxy:
   file: "/etc/apache2/sites-available/000-default.conf"
   string: "<VirtualHost *:80>"
   new_string: "Listen 8080\n<VirtualHost *:8080>\n\tProxyPass "/" "http://localhost:9200"\n\tProxyPassReverse "/" "http://localhost:9200"\n"
-  
+ apache_vhost_magento:
+  file: "/etc/apache2/sites-available/default-ssl.conf"
+  string: "DocumentRoot /var/www/html"  
+  new_string: "DocumentRoot /var/www/html/magento2"

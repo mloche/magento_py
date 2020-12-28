@@ -35,7 +35,7 @@ def install_package(package_list):
 					try:
 						pkg_cache.commit()
 					except arg:
-						print(" >>", sys.stderr, "Sorry, package install failed [{err}]".format(err=str(arg)))
+						sys.exit("Sorry, package install failed {}".format(str(arg)))
 			except KeyError:
 				print(" Package was not found" , inst_pkg[value])
 
@@ -57,7 +57,7 @@ def command_use(list_cmd):
 				completed= subprocess.run(try_cmd)
 #control			print("Result for command {} : {} ".format(cmd[value], completed.returncode))
 			except subprocess.CalledProcessError as err:
-				print("Error using command : ", err)
+				sys.exit("Error using command : ", err)
 	else:
 		print("Command use requires a list of command or a single command")
 
@@ -92,21 +92,33 @@ if len(sys.argv) != 2:
 
 ### STEP 1 : Import YAML file content into yaml_data variable ###
 yaml_data=import_yaml_file(sys.argv[1])
-print(yaml_data)
+print("Data imported")
+#control print(yaml_data)
 
 ### STEP 2 : Retrieve package list in YAML file and call the main package management process ###
 """
 package_list=yaml_data.get('packages')
 install_package(package_list)
+print("Packages are installed")
 """
 
 
-### STEP 3 : Getting database configuration from YAML and call the module Database aliased as mariadb  ###
-"""
+### STEP 3 : Getting database configuration from YAML       ###
+### Test if database exist and is empty and call the module ###
+### Database aliased as mariadb  and execute the querys     ###
+
 db_info=yaml_data.get('database').get('database')
+#print(db_info)
 query=yaml_data.get('database').get('query')
-mariadb._query_list(db_info,query)
-"""
+
+maria_result=mariadb._check_db(db_info)
+if maria_result == False:
+	mariadb._query_list(db_info,query)
+	print("Database configuration done")
+else:
+	sys.exit("Database configuration was not done")
+
+
 
 ### STEP 4 : Installing elastic search ###
 
@@ -124,7 +136,7 @@ default-ssl.conf
 
 
 ### STEP 7 : install magento (copy from git, composer install and run setup)
-#install must be donne using composer install for stable version 
+
 
 ### STEP 8 : Activate apachemodules and restart apache  ###
 """

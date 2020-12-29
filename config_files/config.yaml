@@ -57,16 +57,16 @@ commands:
   - chown -R www-data:www-data /var/www/html
   - systemctl restart apache2
  magento_inst_git:
-  - git -C /var/www.html/ -b 2.4.1 clone https://github.com/magento/magento2
+  - git -C /var/www/html/ clone --branch 2.4.1 https://github.com/magento/magento2
   - sudo composer install -d /var/www/html/magento2 
 
 files:
  apache_ssl_cert:
-  file: "/etc/apache2/sites-enabled/default-ssl.conf" 
+  file: "/etc/apache2/sites-available/default-ssl.conf" 
   string: "/etc/ssl/certs/ssl-cert-snakeoil.pem"
   new_string: "/etc/apache2/ssl/apache.crt"
  apache_ssl_key:
-  file: "/etc/apache2/sites-enabled/default-ssl.conf"
+  file: "/etc/apache2/sites-available/default-ssl.conf"
   string: "/etc/ssl/certs/ssl-cert-snakeoil.pem"
   new_string: "/etc/apache2/ssl/apache.key"
  php_tz:

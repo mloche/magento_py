@@ -1,9 +1,19 @@
+SSL cert commands not working
+
+
+
+
 # magento_py
 Developed for Python 3
 pip module deeded :
 PyYAML
 Python3 installed
 mariadb
+
+Requires sudo and git installed first 
+install python3-pip
+
+
 
 requires python3 -m pip install module
 python3 -c 'import module'

@@ -36,7 +36,7 @@ def _replace_string(file,string,new_string):
 				read_file.truncate()
 				read_file.write(file_content)
 		except:
-			print("Replacement failed !")
+			print("Replacement failed !, {} replacing  {} in  {} ".format(new_string,string,file))
 	else:
 		print("Replacement could not be done, invalid values !")
 

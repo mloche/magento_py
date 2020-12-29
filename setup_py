@@ -150,9 +150,12 @@ print("STEP 7 : Apache modules activated")
 ### STEP 8 : Editing conf files ###
 """
 conf_files=yaml_data.get('files')
-for mod_file in conf_files:
+for mod_file in conf_files.keys():
 	try:
-		files._replace_string(mod_file['file'],mod_file['string'],mod_file['new_string'])
+		file_arg=conf_files[mod_file].get('file')
+		string_arg=conf_files[mod_file].get('string')
+		new_string_arg=conf_files[mod_file].get('new_string')
+		files._replace_string(file_arg,string_arg,new_string_arg)
 	except:
 		sys.exit("Conf files modifications failed, STEP 8")
 

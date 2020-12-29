@@ -56,7 +56,7 @@ def _query_list(db_info,query):
 def _check_db(db_info):
 	if isinstance(db_info,dict):
 		try:
-			db_info["db_name"]="datatest"
+#			db_info["db_name"]="datatest"
 			db_conn=_connect(db_info["ip_address"],db_info["db_admin"],db_info["db_password"],db_info["db_name"],db_info['db_port'])
 			test_query=_query(db_conn,"show tables from {} ;".format(db_info["db_name"]))
 #control			print("test_query",test_query)
@@ -68,5 +68,6 @@ def _check_db(db_info):
 				sys.exit("Database is not empty")
 		except:
 			sys.exit("Database is not empty")
+
 
 

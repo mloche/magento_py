@@ -85,10 +85,10 @@ files:
   file: "/etc/mysql/mariadb.conf.d/50-server.cnf"
   string: "[server]"
   new_string: "[server]\nexplicit_defaults_for_timestamp=1\n"
-#! apache_vhost_proxy:
-#!  file: "/etc/apache2/sites-available/000-default.conf"
-#!  string: "<VirtualHost *:80>"
-#!  new_string: "Listen 8080\n<VirtualHost *:8080>\n\tProxyPass "/" "http://localhost:9200"\n\tProxyPassReverse "/" "http://localhost:9200"\n"
+ apache_vhost_proxy:
+  file: "/etc/apache2/sites-available/000-default.conf"
+  string: "<VirtualHost *:80>"
+  new_string: "Listen 8080\n<VirtualHost *:8080>\n\tProxyPass \"/\" \"http://localhost:9200\"\n\tProxyPassReverse \"/\" \"http://localhost:9200\"\n"
  apache_vhost_magento:
   file: "/etc/apache2/sites-available/default-ssl.conf"
   string: "DocumentRoot /var/www/html"  

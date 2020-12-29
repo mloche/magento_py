@@ -73,7 +73,7 @@ def import_yaml_file(file):
 		try:
 			with open(file) as read_file:
 				data = yaml.load(read_file, Loader=yaml.FullLoader)
-#control				print("Data read are : {}".format(data))
+				print("Data read are : {}".format(data))
 				return(data)
 		except Exception as err :
 			print("Could not open {} file error : {}".format(file,err))
@@ -161,6 +161,7 @@ print("STEP 8 : configuration files modified")
 
 
 ### STEP 9 : Install magento and cron install ###
+"""
 magento_inst=yaml_data.get('magento_setup')
 magento_inst_command="./var/www/html/magento2/bin/magento setup:install "
 #control print(magento_inst)
@@ -178,7 +179,7 @@ except:
 
 print("STEP 9 : magento installed and cron created")
 
-
+"""
 
 ### STEP 10 : Configure ACL for www folder and final restart apache ###
 """

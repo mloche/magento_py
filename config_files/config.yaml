@@ -85,11 +85,29 @@ files:
   file: "/etc/mysql/mariadb.conf.d/50-server.cnf"
   string: "[server]"
   new_string: "[server]\nexplicit_defaults_for_timestamp=1\n"
- apache_vhost_proxy:
-  file: "/etc/apache2/sites-available/000-default.conf"
-  string: "<VirtualHost *:80>"
-  new_string: "Listen 8080\n<VirtualHost *:8080>\n\tProxyPass "/" "http://localhost:9200"\n\tProxyPassReverse "/" "http://localhost:9200"\n"
+#! apache_vhost_proxy:
+#!  file: "/etc/apache2/sites-available/000-default.conf"
+#!  string: "<VirtualHost *:80>"
+#!  new_string: "Listen 8080\n<VirtualHost *:8080>\n\tProxyPass "/" "http://localhost:9200"\n\tProxyPassReverse "/" "http://localhost:9200"\n"
  apache_vhost_magento:
   file: "/etc/apache2/sites-available/default-ssl.conf"
   string: "DocumentRoot /var/www/html"  
   new_string: "DocumentRoot /var/www/html/magento2"
+
+#List of options and values for magento install
+magento_setup:
+ admin-firstname: admin
+ admin-lastname: magento
+ language: fr_FR
+ currency: EUR
+ timezone: Europe/Paris
+ use-secure: "1"
+ base-url: https://localhost
+ db-host: localhost
+ db-user: magento
+ db-password: magento
+ db-name: magento
+ use-secure-admin: "1"
+ admin-password: passw0rd
+ admin-email: admin@local.net
+ base-url: https://localhost

@@ -49,16 +49,17 @@ def command_use(list_cmd):
 	if isinstance(list_cmd,(list,str)):
 		value=0
 		max=len(list_cmd)
+		print(max)
 		for value in range(0,max):
-#control		print(cmd[value])
+			print(list_cmd[value])
 			try:
 				try_cmd=list_cmd[value]
 				try_cmd=try_cmd.split()
 				completed= subprocess.run(try_cmd)
 #control			print("Result for command {} : {} ".format(cmd[value], completed.returncode))
-				return(completed)
 			except subprocess.CalledProcessError as err:
 				sys.exit("Error using command : ", err)
+		return(completed)
 	else:
 		print("Command use requires a list of command or a single command")
 
@@ -73,7 +74,7 @@ def import_yaml_file(file):
 		try:
 			with open(file) as read_file:
 				data = yaml.load(read_file, Loader=yaml.FullLoader)
-				print("Data read are : {}".format(data))
+#control				print("Data read are : {}".format(data))
 				return(data)
 		except Exception as err :
 			print("Could not open {} file error : {}".format(file,err))
@@ -126,10 +127,11 @@ else:
 elastic_cmd=yaml_data.get('commands').get('elasticsearch')
 command_use(elastic_cmd)
 print("STEP 4 : Elastic search installed")
-
+"""
 ### STEP 5 : Creating SSL Cert for Apache ###
-
+"""
 ssl_cmd=yaml_data.get('commands').get('ssl')
+print(ssl_cmd)
 command_use(ssl_cmd)
 print("STEP 5 : SSL for apache installed")
 """
@@ -193,6 +195,9 @@ print("STEP 10 : Apache restarted")
 
 ### STEP 11 : Delete magento setup folder and show admin URL ###
 """
+
+NEEDS TO BE TESTED
+
 magento_url= command_use("./var/www/html/magento2/bin/magento info:adminuri")
 print("STEP 11 : magento installed and working, URL is : {}".format(magento_url))
 """

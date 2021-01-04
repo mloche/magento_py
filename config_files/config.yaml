@@ -102,7 +102,7 @@ magento_setup:
  currency: EUR
  timezone: Europe/Paris
  use-secure: "1"
- base-url: https://localhost
+ base-url-secure: https://localhost
  db-host: localhost
  db-user: magento
  db-password: magento

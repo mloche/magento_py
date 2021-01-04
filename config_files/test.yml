@@ -7,13 +7,13 @@ packages:
 
 database:
  database: 
-  ip_address: 192.168.1.6
+  ip_address: localhost
   db_admin: magento
   db_password: magento
   db_name: magento
   db_port: 3306
  query:
-  - "create table user;"
+  - "create table testusertable;"
   - "show grants;"
   - "show tables;"
 

@@ -113,7 +113,7 @@ print("STEP 2 : Packages are installed")
 ### STEP 3 : Getting database configuration from YAML       ###
 ### Test if database exist, if it is empty calls the module ###
 ### Database aliased as mariadb  and execute the querys     ###
-
+"""
 db_info=yaml_data.get('database').get('database')
 #print(db_info)
 query=yaml_data.get('database').get('query')
@@ -132,7 +132,7 @@ if maria_result == True:
 else:
 	sys.exit("STEP 3 : Database configuration was not done")
 
-
+"""
 
 ### STEP 4 : Installing elastic search ###
 """

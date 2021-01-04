@@ -58,12 +58,12 @@ def _query_list(db_info,query):
 def _check_db(db_info):
 	if isinstance(db_info,dict):
 		try:
-			db_info["db_name"]="datatest"
+#control			db_info["db_name"]="datatest"
 #			print(db_info)
 			db_conn=_connect(db_info["ip_address"],db_info["db_admin"],db_info["db_password"],db_info["db_name"],db_info['db_port'])
 			if db_conn != False:
 				test_query=_query(db_conn,"show tables;")
-				print("test_query",test_query)
+#				print("test_query",test_query)
 				if test_query == None :
 #control				print("database is empty")
 					return(True)
@@ -78,14 +78,11 @@ def _check_db(db_info):
 
 
 def _connect_socket(db_info):
-	print("Entering in _connect_socket")
-	if isinstance(db_serv, str) and isinstance(db_admin,str) and isinstance(db_pass,str) and isinstance(db_name,str) and isinstance(db_port,int):
-		try:
-			conn_sock = mariadb.connect(host=db_info["ip_address"],user=db_info["db_admin"],password=db_info["db_pass"],database=db_info["db_name"],unix_socket="/var/run/mysqld/mysqld.sock",port=db_info["db_port"])
-		except mariadb.Error as error:
-			print("error connecting to mariadb platform: {} with _connect".format(error))
-	else:
-		sys.exit("Error invalid values given, for CONNECTING TO A DATABASE. Quit")
+#	print("Entering in _connect_socket")
+	try:
+		conn_sock = mariadb.connect(unix_socket="/var/run/mysqld/mysqld.sock")
+	except mariadb.Error as error:
+		print("error connecting to mariadb platform: {} with _connect".format(error))
 	return(conn_sock)
 
 
@@ -100,7 +97,7 @@ def _query_list_sock(db_info,query):
 			max=len(query)
 			for value in range(0,max):
 				query_result=_query(db_conn_sock,query[value])
-				print(query_result)
+#control			print(query_result)
 		except:
 			print("could not query {} to database {}".format(query,db_info))
 #control		print("Releasing the database")

@@ -1,7 +1,7 @@
 #List of the database params
 database:
  database:   #variables to connect the DB
-  ip_address: 192.168.1.7
+  ip_address: localhost
   db_admin: magento
   db_password: magento
   db_name: magento

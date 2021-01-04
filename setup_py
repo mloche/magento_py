@@ -1,6 +1,6 @@
 #!/bin/python3
 ### Imports required module including custom modules in the ./modules/ folder ###
-#integrer exit
+
 #Standard modules#
 import apt
 import sys
@@ -8,6 +8,7 @@ sys.path.append('./modules/')
 import yaml
 import subprocess
 import fileinput
+import getpass
 #Custom modules#
 import database as mariadb
 import files
@@ -83,7 +84,6 @@ def import_yaml_file(file):
 
 
 
-
 ####################################################
 #              MAIN PROGRAM                        #
 ####################################################
@@ -91,35 +91,47 @@ def import_yaml_file(file):
 ### Check for a second arguments before anything ###
 if len(sys.argv) != 2:
 	raise ValueError("Please provide path to yaml file as argument, usage : {} path ".format(sys.argv[0]))
+mysql_adm_pass=getpass.getpass("Please enter the root mysql server :")
+
 
 ### STEP 1 : Import YAML file content into yaml_data variable ###
+
 yaml_data=import_yaml_file(sys.argv[1])
 print("STEP 1 : YAML data imported")
-#control print(yaml_data)
+#control	print(yaml_data)
+
 
 ### STEP 2 : Retrieve package list in YAML file and call the main package management process ###
 """
 package_list=yaml_data.get('packages')
+#control print(_package_list)
 install_package(package_list)
 print("STEP 2 : Packages are installed")
 """
 
 
 ### STEP 3 : Getting database configuration from YAML       ###
-### Test if database exist and is empty and call the module ###
+### Test if database exist, if it is empty calls the module ###
 ### Database aliased as mariadb  and execute the querys     ###
-"""
+
 db_info=yaml_data.get('database').get('database')
 #print(db_info)
 query=yaml_data.get('database').get('query')
 
 maria_result=mariadb._check_db(db_info)
-if maria_result == False:
-	mariadb._query_list(db_info,query)
-	print("Database configuration done")
+print("maria result is ",maria_result)
+#Maria result will be False if database exists, will return True if 
+#the database did not exist or could not connect with the parameters given
+#script will go on in this case
+if maria_result == True:
+	db_info['db_admin']="root"
+	db_info['db_password']=mysql_adm_pass
+	print(db_info['db_password'])
+	mariadb._query_list_sock(db_info,query)
+	print("STEP 3 : Database configuration done")
 else:
 	sys.exit("STEP 3 : Database configuration was not done")
-"""
+
 
 
 ### STEP 4 : Installing elastic search ###

@@ -8,8 +8,8 @@ database:
   db_port: 3306
  query:  #queries to configure and create the DB
   - "create database magento;"
-  - "create user magento@localhost identified by 'magento';"
-  - "grant all privilege on magento.* to magento@localhost identified by 'magento';"
+  - "create user 'magento'@'localhost' identified by 'magento';"
+  - "grant all on magento.* to 'magento'@'localhost' identified by 'magento' with grant option;"
   - "flush privileges;"
 
 #List of required packages case sensitive with apt package name
@@ -50,7 +50,7 @@ commands:
   - wget -P /tmp/elasticsearch/ https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-7.10.0-amd64.deb.sha512
   - shasum -a 512 -c /tmp/elasticsearch/elasticsearch-7.10.0-amd64.deb
   - dpkg -i /tmp/elasticsearch/elasticsearch-7.10.0-amd64.deb
-  - systemct start elasticsearch
+  - systemctl start elasticsearch
   - systemctl daemon-reload
   - systemctl enable elasticsearch.service
  apache2_end:
@@ -67,7 +67,7 @@ files:
   new_string: "/etc/apache2/ssl/apache.crt"
  apache_ssl_key:
   file: "/etc/apache2/sites-available/default-ssl.conf"
-  string: "/etc/ssl/certs/ssl-cert-snakeoil.pem"
+  string: "/etc/ssl/private/ssl-cert-snakeoil.key"
   new_string: "/etc/apache2/ssl/apache.key"
  php_tz:
   file: "/etc/php/7.3/apache2/php.ini"
@@ -81,7 +81,7 @@ files:
   file: "/etc/php/7.3/apache2/php.ini"
   string: ";opcache.save.comments=1"
   new_string: "opcache.save.comments=1"
- mariadb:
+ mariadb:  
   file: "/etc/mysql/mariadb.conf.d/50-server.cnf"
   string: "[server]"
   new_string: "[server]\nexplicit_defaults_for_timestamp=1\n"

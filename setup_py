@@ -8,7 +8,6 @@ sys.path.append('./modules/')
 import yaml
 import subprocess
 import fileinput
-import getpass
 #Custom modules#
 import database as mariadb
 import files
@@ -91,7 +90,6 @@ def import_yaml_file(file):
 ### Check for a second arguments before anything ###
 if len(sys.argv) != 2:
 	raise ValueError("Please provide path to yaml file as argument, usage : {} path ".format(sys.argv[0]))
-mysql_adm_pass=getpass.getpass("Please enter the root mysql server :")
 
 
 ### STEP 1 : Import YAML file content into yaml_data variable ###
@@ -119,14 +117,11 @@ db_info=yaml_data.get('database').get('database')
 query=yaml_data.get('database').get('query')
 
 maria_result=mariadb._check_db(db_info)
-print("maria result is ",maria_result)
+#control print("maria result is ",maria_result)
 #Maria result will be False if database exists, will return True if 
 #the database did not exist or could not connect with the parameters given
 #script will go on in this case
 if maria_result == True:
-	db_info['db_admin']="root"
-	db_info['db_password']=mysql_adm_pass
-	print(db_info['db_password'])
 	mariadb._query_list_sock(db_info,query)
 	print("STEP 3 : Database configuration done")
 else:
@@ -154,14 +149,8 @@ magento_inst=yaml_data.get('commands').get('magento_inst_git')
 command_use(magento_inst)
 print("STEP 6 : Magento installed from github")
 """
-### STEP 7 : Activate apachemodules and restart apache  ###
-"""
-modules_apache=yaml_data.get('commands').get('apache2_mods')
-command_use(modules_apache)
-print("STEP 7 : Apache modules activated")
-"""
 
-### STEP 8 : Editing conf files ###
+### STEP 7 : Editing conf files ###
 """
 conf_files=yaml_data.get('files')
 for mod_file in conf_files.keys():
@@ -173,9 +162,15 @@ for mod_file in conf_files.keys():
 	except:
 		sys.exit("Conf files modifications failed, STEP 8")
 
-print("STEP 8 : configuration files modified")
+print("STEP 7 : configuration files modified")
 """
 
+### STEP 8 : Activate apachemodules and restart apache  ###
+"""
+modules_apache=yaml_data.get('commands').get('apache2_mods')
+command_use(modules_apache)
+print("STEP 8 : Apache modules activated")
+"""
 
 ### STEP 9 : Install magento and cron install ###
 """

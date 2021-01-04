@@ -65,13 +65,13 @@ def _check_db(db_info):
 				test_query=_query(db_conn,"show tables;")
 #				print("test_query",test_query)
 				if test_query == None :
-#control				print("database is empty")
-					return(True)
+					print("Database exists !")
+					return(False)
 
 				else:
 					sys.exit("Database is not empty")
 			else:
-				print("Db does not exist")
+				print("Database does not exist")
 				return(True)
 		except:
 			sys.exit("Check_DB could not connect to Database {}".format(db_info['db_name']))
@@ -92,7 +92,7 @@ def _query_list_sock(db_info,query):
 	if isinstance(db_info, dict) and isinstance(query,(str, list)):
 		try:	
 			db_conn_sock=_connect_socket(db_info)
-			print(db_conn_sock)
+#			print(db_conn_sock)
 			value =0
 			max=len(query)
 			for value in range(0,max):

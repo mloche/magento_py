@@ -30,7 +30,7 @@ def _replace_string(file,string,new_string):
 		try:
 			with open(file,"r+") as read_file:
 				file_content=read_file.read()
-				findstring=re.compile(string)
+				findstring=re.compile(re.escape(string))
 				file_content=findstring.sub(new_string,file_content,1)
 				read_file.seek(0)
 				read_file.truncate()

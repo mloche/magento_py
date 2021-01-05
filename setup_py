@@ -49,7 +49,7 @@ def command_use(list_cmd):
 	if isinstance(list_cmd,(list,str)):
 		value=0
 		max=len(list_cmd)
-		print(max)
+#control		print(max)
 		for value in range(0,max):
 			print(list_cmd[value])
 			try:
@@ -202,7 +202,7 @@ print("STEP 10 : Apache restarted")
 ### STEP 11 : Delete magento setup folder and show admin URL ###
 
 
-magento_url_cmd="./var/www/html/magento2/bin/magento info:adminuri"
+magento_url_cmd="/var/www/html/magento2/bin/./magento info:adminuri"
 magento_url=subprocess.run(magento_url_cmd.split(),capture_output=True)
 printurl=str(magento_url.stdout)[4:28]
 #control print(printurl)

@@ -175,17 +175,17 @@ print("STEP 8 : Apache modules activated")
 ### STEP 9 : Install magento and cron install ###
 """
 magento_inst=yaml_data.get('magento_setup')
-magento_inst_command="./var/www/html/magento2/bin/magento setup:install "
+magento_inst_command="/var/www/html/magento2/bin/./magento setup:install "
 #control print(magento_inst)
 for option in magento_inst:
 #control	print(option,magento_inst[option])
 	magento_inst_command=magento_inst_command + str("--"+option+"="+magento_inst[option]+" ")
-print(magento_inst_command)
+#control print(magento_inst_command)
 try:
-	inst=subprocess.run(magento_inst_command)
-	print(inst)
-	instcron=subprocess.run("./var/www/html/magento2/bin/magento cron:install")
-	print(instcron)
+	inst=subprocess.run(magento_inst_command.split())
+#	print(inst)
+	instcron=subprocess.run("/var/www/html/magento2/bin/./magento cron:install".split())
+#	print(instcron)
 except:
 	sys.exit("STEP 9 : could not install magento")
 
@@ -203,10 +203,10 @@ print("STEP 10 : Apache restarted")
 ### STEP 11 : Delete magento setup folder and show admin URL ###
 """
 
-NEEDS TO BE TESTED
-
-magento_url= command_use("./var/www/html/magento2/bin/magento info:adminuri")
-print("STEP 11 : magento installed and working, URL is : {}".format(magento_url))
+magento_url= subprocess.run("./var/www/html/magento2/bin/magento info:adminuri".split(),capture_output=True)
+printurl=str(magento_url.stdout)[4:28]
+#control print(printurl)
+print("STEP 11 : magento installed and working :\n ###### \n \n # {} # \n\n #####".format(printurl))
 """
 
 print("#####################################\n###### {} IS FINISHED ###### \n ".format(sys.argv[0]))

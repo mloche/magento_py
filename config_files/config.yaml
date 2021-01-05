@@ -56,6 +56,7 @@ commands:
  apache2_end:
   - chown -R www-data:www-data /var/www/html
   - systemctl restart apache2
+  - chmod a-w /var/www/html/magento2/app/etc
  magento_inst_git:
   - git -C /var/www/html/ clone --branch 2.4.1 https://github.com/magento/magento2
   - sudo composer install -d /var/www/html/magento2 
@@ -111,3 +112,4 @@ magento_setup:
  admin-password: passw0rd
  admin-email: admin@local.net
  base-url: https://localhost
+ admin-user: admin

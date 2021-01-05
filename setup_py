@@ -100,18 +100,18 @@ print("STEP 1 : YAML data imported")
 
 
 ### STEP 2 : Retrieve package list in YAML file and call the main package management process ###
-"""
+
 package_list=yaml_data.get('packages')
 #control print(_package_list)
 install_package(package_list)
 print("STEP 2 : Packages are installed")
-"""
+
 
 
 ### STEP 3 : Getting database configuration from YAML       ###
 ### Test if database exist, if it is empty calls the module ###
 ### Database aliased as mariadb  and execute the querys     ###
-"""
+
 db_info=yaml_data.get('database').get('database')
 #print(db_info)
 query=yaml_data.get('database').get('query')
@@ -127,31 +127,31 @@ if maria_result == True:
 else:
 	sys.exit("STEP 3 : Database configuration was not done")
 
-"""
+
 
 ### STEP 4 : Installing elastic search ###
-"""
+
 elastic_cmd=yaml_data.get('commands').get('elasticsearch')
 command_use(elastic_cmd)
 print("STEP 4 : Elastic search installed")
-"""
+
 ### STEP 5 : Creating SSL Cert for Apache ###
-"""
+
 ssl_cmd=yaml_data.get('commands').get('ssl')
 print(ssl_cmd)
 command_use(ssl_cmd)
 print("STEP 5 : SSL for apache installed")
-"""
+
 
 ### STEP 6 : install magento (copy from git, composer install and run setup)
-"""
+
 magento_inst=yaml_data.get('commands').get('magento_inst_git')
 command_use(magento_inst)
 print("STEP 6 : Magento installed from github")
-"""
+
 
 ### STEP 7 : Editing conf files ###
-"""
+
 conf_files=yaml_data.get('files')
 for mod_file in conf_files.keys():
 	try:
@@ -163,50 +163,50 @@ for mod_file in conf_files.keys():
 		sys.exit("Conf files modifications failed, STEP 8")
 
 print("STEP 7 : configuration files modified")
-"""
+
 
 ### STEP 8 : Activate apachemodules and restart apache  ###
-"""
+
 modules_apache=yaml_data.get('commands').get('apache2_mods')
 command_use(modules_apache)
 print("STEP 8 : Apache modules activated")
-"""
+
 
 ### STEP 9 : Install magento and cron install ###
-"""
+
 magento_inst=yaml_data.get('magento_setup')
 magento_inst_command="/var/www/html/magento2/bin/./magento setup:install "
-#control print(magento_inst)
+
 for option in magento_inst:
-#control	print(option,magento_inst[option])
 	magento_inst_command=magento_inst_command + str("--"+option+"="+magento_inst[option]+" ")
 #control print(magento_inst_command)
 try:
 	inst=subprocess.run(magento_inst_command.split())
-#	print(inst)
-	instcron=subprocess.run("/var/www/html/magento2/bin/./magento cron:install".split())
-#	print(instcron)
+	inst_cron_command="/var/www/html/magento2/bin/./magento cron:install"
+	inst_cron=subprocess.run(inst_cron_command.split())
+
 except:
 	sys.exit("STEP 9 : could not install magento")
 
 print("STEP 9 : magento installed and cron created")
 
-"""
+
 
 ### STEP 10 : Configure ACL for www folder and final restart apache ###
-"""
+
 apache_end=yaml_data.get('commands').get('apache2_end')
 command_use(apache_end)
 print("STEP 10 : Apache restarted")
-"""
+
 
 ### STEP 11 : Delete magento setup folder and show admin URL ###
-"""
 
-magento_url= subprocess.run("./var/www/html/magento2/bin/magento info:adminuri".split(),capture_output=True)
+
+magento_url_cmd="./var/www/html/magento2/bin/magento info:adminuri"
+magento_url=subprocess.run(magento_url_cmd.split(),capture_output=True)
 printurl=str(magento_url.stdout)[4:28]
 #control print(printurl)
 print("STEP 11 : magento installed and working :\n ###### \n \n # {} # \n\n #####".format(printurl))
-"""
+
 
 print("#####################################\n###### {} IS FINISHED ###### \n ".format(sys.argv[0]))

@@ -69,13 +69,14 @@ def _check_db(db_info):
 					return(False)
 
 				else:
-					sys.exit("Database is not empty")
+					print("Database is not empty")
+					return(False)
 			else:
 				print("Database does not exist")
 				return(True)
 		except:
-			sys.exit("Check_DB could not connect to Database {}".format(db_info['db_name']))
-
+			print("Check_DB could not connect to Database {}".format(db_info['db_name']))
+			return(False)
 
 def _connect_socket(db_info):
 #	print("Entering in _connect_socket")

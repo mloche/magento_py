@@ -6,6 +6,7 @@ import apt
 import sys
 sys.path.append('./modules/')
 import yaml
+import os
 import subprocess
 import fileinput
 import logging
@@ -103,7 +104,6 @@ print("STEP 1 : YAML data imported")
 
 ### STEP 2 : Creating Error handlers ###
 log_path=yaml_data.get('logging')
-#control	print(log_path)
 magento_logger=logging.getLogger()
 magento_logger.setLevel(logging.DEBUG)
 magento_formatter = logging.Formatter(' %(asctime)s :: %(levelname)s ::  %(message)s')
@@ -121,14 +121,14 @@ package_list=yaml_data.get('packages')
 print(package_list)
 install_package(package_list)
 print("STEP 3 : Packages are installed")
-magento_logger.info("STEP 3 : packages are installed, list : {]".format(package_list))
+magento_logger.info("STEP 3 : packages are installed, list : {}".format(package_list))
 
 
 
 ### STEP 4 : Getting database configuration from YAML       ###
 ### Test if database exist, if it is empty calls the module ###
 ### Database aliased as mariadb  and execute the querys     ###
-"""
+
 db_info=yaml_data.get('database').get('database')
 #print(db_info)
 query=yaml_data.get('database').get('query')
@@ -168,14 +168,14 @@ magentof_logger.info("STEP 6 : SSL for apache installed")
 magento_inst=yaml_data.get('commands').get('magento_inst_git')
 command_use(magento_inst)
 print("STEP 7 : Magento installed from github")
-magento_logger.info("STEP 7 : Magento installed")
-"""
+magento_logger.info("STEP 7 : Magentocopied from git")
+
 ### STEP 8 : Editing conf files ###
-try:
-	flag = open(".flag")
+if os.path.exists(".flag") == True:
+	
 	magento_logger.error("Configuration files already modified, flag existing. Skiping Step 7")
 except:
-	subprocess.run('touch','.flag')
+	subprocess.run(['touch','.flag]')
 	conf_files=yaml_data.get('files')
 	for mod_file in conf_files.keys():
 		try:
@@ -188,11 +188,11 @@ except:
 			magento_logger.error("STEP 8 : configuration files modification failed")
 	print("STEP 8 : configuration files modified")
 	magento_logger.info("STEP 8 Configuration files modified")
-	subprocess.run('rm', '.flag')
+	subprocess.run(['rm', '.flag'])
 	magento_logger.info("Flag deleted")
 
 ### STEP 9 : Activate apachemodules and restart apache  ###
-"""
+
 modules_apache=yaml_data.get('commands').get('apache2_mods')
 command_use(modules_apache)
 print("STEP 9 : Apache modules activated")
@@ -213,7 +213,7 @@ try:
 
 except:
 	sys.exit("STEP 10 : could not install magento")
-	magento_logger.error("STEP 10 could not run setup:install for magento")
+	magento_logger.error("STEP 10 could not run setup:install for magento with {} command".format(magento_inst))
 print("STEP 10 : magento installed and cron created")
 magento_logger.info("STEP 10 setup:install for magento run finished")
 
@@ -226,7 +226,7 @@ print("STEP 11 : Apache restarted")
 magento_logger.info("STEP 11 apache restarted and ACL for website modified")
 
 ### STEP 12 : Show admin URL ###
-"""
+
 
 magento_url_cmd="/var/www/html/magento2/bin/./magento info:adminuri"
 try:
@@ -234,7 +234,7 @@ try:
 	printurl=str(magento_url.stdout)[4:28]
 #control print(printurl)
 	print("STEP 11 : magento installed and working :\n ###### \n \n # {} # \n\n #####".format(printurl))
-	magento_logger.info("STEP 12 Admin URL is :",printurl)
+	magento_logger.info("STEP 12 Admin URL is : {}".format(printurl))
 except:
 	print("Could not retrieve admin URL")
 	magento_logger.info("STEP 12, could not retrieve admin url")

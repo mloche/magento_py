@@ -1,3 +1,6 @@
+#path to the log file
+logging: "/var/log/magento_py.log"
+
 #List of the database params
 database:
  database:   #variables to connect the DB
@@ -6,6 +9,7 @@ database:
   db_password: magento
   db_name: magento
   db_port: 3306
+  unix_sock: "/var/run/mysqld/mysqld.sock"
  query:  #queries to configure and create the DB
   - "create database magento;"
   - "create user 'magento'@'localhost' identified by 'magento';"
@@ -56,7 +60,7 @@ commands:
  apache2_end:
   - chown -R www-data:www-data /var/www/html
   - systemctl restart apache2
-  - chmod a-w /var/www/html/magento2/app/etc
+ # - chmod a-w /var/www/html/magento2/app/etc
  magento_inst_git:
   - git -C /var/www/html/ clone --branch 2.4.1 https://github.com/magento/magento2
   - sudo composer install -d /var/www/html/magento2 
@@ -93,7 +97,7 @@ files:
  apache_vhost_magento:
   file: "/etc/apache2/sites-available/default-ssl.conf"
   string: "DocumentRoot /var/www/html"  
-  new_string: "DocumentRoot /var/www/html/magento2"
+  new_string: "DocumentRoot /var/www/html/magento2\n\t\t<Directory /var/www/html/magento2>\n\t\t\tAllowOverride All\n\t\t</Directory>"
 
 #List of options and values for magento install
 magento_setup:

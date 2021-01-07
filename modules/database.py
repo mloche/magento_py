@@ -80,7 +80,7 @@ def _check_db(db_info):
 def _connect_socket(db_info):
 #	print("Entering in _connect_socket")
 	try:
-		conn_sock = mariadb.connect(unix_socket="/var/run/mysqld/mysqld.sock")
+		conn_sock = mariadb.connect(unix_socket=db_info['unix_sock'])
 	except mariadb.Error as error:
 		print("error connecting to mariadb platform: {} with _connect".format(error))
 	return(conn_sock)

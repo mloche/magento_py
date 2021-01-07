@@ -32,7 +32,7 @@ Or you can install manualy the following packages and modules :
 Usage is pretty straight forward, user will need to type 
 
 >./setup.py PATH
->./setup.py config_files/config.yaml *** for exemple***
+>./setup.py config_files/config.yaml                       ***for exemple***
 
 
 

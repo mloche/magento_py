@@ -222,6 +222,7 @@ magento_logger.info("STEP 10 setup:install for magento run finished")
 ### STEP 11 : Configure ACL for www folder and final restart apache ###
 
 apache_end=yaml_data.get('commands').get('apache2_end')
+os.chown("/var/www/html/magento2/",33,33)
 command_use(apache_end)
 print("STEP 11 : Apache restarted")
 magento_logger.info("STEP 11 apache restarted and ACL for website modified")

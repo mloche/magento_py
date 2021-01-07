@@ -34,8 +34,8 @@ packages:
  - openjdk-11-jdk
  - composer
  - curl
-# - libariadbclient-dev
 
+#list of commands for each component
 commands:
  ssl:
   - mkdir -p /etc/apache2/ssl
@@ -58,13 +58,14 @@ commands:
   - systemctl daemon-reload
   - systemctl enable elasticsearch.service
  apache2_end:
-  - chown -R www-data:www-data /var/www/html
+#  - chown -R www-data:www-data /var/www/html
+  - chmod a-w /var/www/html/magento2/app/etc
   - systemctl restart apache2
- # - chmod a-w /var/www/html/magento2/app/etc
  magento_inst_git:
   - git -C /var/www/html/ clone --branch 2.4.1 https://github.com/magento/magento2
   - sudo composer install -d /var/www/html/magento2 
 
+#list of files for modification
 files:
  apache_ssl_cert:
   file: "/etc/apache2/sites-available/default-ssl.conf" 

@@ -118,7 +118,7 @@ magento_logger.info("Starting script")
 ### STEP 3 : Retrieve package list in YAML file and call the main package management process ###
 
 package_list=yaml_data.get('packages')
-print(package_list)
+#control print(package_list)
 install_package(package_list)
 print("STEP 3 : Packages are installed")
 magento_logger.info("STEP 3 : packages are installed, list : {}".format(package_list))
@@ -153,29 +153,29 @@ else:
 elastic_cmd=yaml_data.get('commands').get('elasticsearch')
 command_use(elastic_cmd)
 print("STEP 5 : Elastic search installed")
-mangeto_logger.info("STEP 5 : elasticsearch installed")
+magento_logger.info("STEP 5 : elasticsearch installed")
 
 ### STEP 6 : Creating SSL Cert for Apache ###
 
 ssl_cmd=yaml_data.get('commands').get('ssl')
-print(ssl_cmd)
+#control print(ssl_cmd)
 command_use(ssl_cmd)
 print("STEP 6 : SSL for apache installed")
-magentof_logger.info("STEP 6 : SSL for apache installed")
+magento_logger.info("STEP 6 : SSL for apache installed")
 
 ### STEP 7 : install magento (copy from git, composer install and run setup)
 
 magento_inst=yaml_data.get('commands').get('magento_inst_git')
 command_use(magento_inst)
 print("STEP 7 : Magento installed from github")
-magento_logger.info("STEP 7 : Magentocopied from git")
+magento_logger.info("STEP 7 : Magento copied from git")
 
 ### STEP 8 : Editing conf files ###
 if os.path.exists(".flag") == True:
-	
+
 	magento_logger.error("Configuration files already modified, flag existing. Skiping Step 7")
-except:
-	subprocess.run(['touch','.flag]')
+else:
+	subprocess.run(['touch','.flag'])
 	conf_files=yaml_data.get('files')
 	for mod_file in conf_files.keys():
 		try:
@@ -190,6 +190,7 @@ except:
 	magento_logger.info("STEP 8 Configuration files modified")
 	subprocess.run(['rm', '.flag'])
 	magento_logger.info("Flag deleted")
+
 
 ### STEP 9 : Activate apachemodules and restart apache  ###
 

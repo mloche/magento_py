@@ -1,6 +1,12 @@
 #path to the log file
 logging: "/var/log/magento_py.log"
 
+#list of webserver variables, folder and user/group
+www:
+ www_path: "/var/www/html/magento2"
+ www_user: "www-data"
+ www_group: "www-data"
+
 #List of the database params
 database:
  database:   #variables to connect the DB
@@ -58,7 +64,6 @@ commands:
   - systemctl daemon-reload
   - systemctl enable elasticsearch.service
  apache2_end:
-#  - chown -R www-data:www-data /var/www/html
   - chmod a-w /var/www/html/magento2/app/etc
   - systemctl restart apache2
  magento_inst_git:
@@ -108,7 +113,7 @@ magento_setup:
  currency: EUR
  timezone: Europe/Paris
  use-secure: "1"
- base-url-secure: https://localhost
+ base-url-secure: https://192.168.1.13
  db-host: localhost
  db-user: magento
  db-password: magento
@@ -116,5 +121,5 @@ magento_setup:
  use-secure-admin: "1"
  admin-password: passw0rd
  admin-email: admin@local.net
- base-url: https://localhost
+ base-url: https://192.168.1.13
  admin-user: admin

@@ -12,7 +12,6 @@ This script writen in Python3 will take care of installing all the packages requ
  create the database and install Magento software in its community edition.  
 
 
-
 # REQUISITES 
 
 To work the script requires a few tools listed bellow. You can use the bash script requisites.sh   
@@ -32,28 +31,39 @@ Or you can install manualy the following packages and modules :
 Usage is pretty straight forward, user will need to type 
 
 >./setup.py PATH
+>
 >./setup.py config_files/config.yaml                       ***for exemple***
 
 
-
-
 PATH is the path to the YAML config file, can be either relative or absolute path. The script will 
-raise an error is argument is not given or invalid.  
+raise an error if argument is not given or invalid.  
 Each step of the setup will be ended by a notification message "STEP ....." to indicate that the
 step has ended successfully.  
 
 # LOGGING 
+
 Logs will be saved in the folder/file specified in the yaml configuration file.  
+A hidden .flag file will be created at the begining of the file modification process and deleted at the end. If a failure occurs in this specific step, the next launch will skip.
 
+# YAML FILE STRUCTURE
+ 
+ - logging: will contain path and filename for the desired logfile, defaut is /var/log/magento_py.log
+ - www: provides values to modify permission on the www_path to www_user
+ - database: Values for the DB manipulation
+  - database: values required to connect to the database or check if existing
+  - query: querys that will create db, user and grant privilegies
+ - packages: list of the apt packages needed
+ - commands: list of the executed commands for each part
+ - files: list of the files and modification done
+ - magento_setup: list of the installation options and values desired in the setup process
 
-# notes :  
->if databse is on remote server, allow connection to the database from the serveur where the script will be executed
-Config files are in config_files/  
+# CERTIFICATE :  
+ 
  - cert.cnf for the auto certification informations, can be personalized with Organization informations
- - config.yaml for all the conf params, going from database access to magento install options.
 
+# NOTES
 
 Securing mariadb installation should be done by user if required at the end of the setup.
-
+Some improvements can be done, feel free to ask for pull requests and submit issues.
 
 

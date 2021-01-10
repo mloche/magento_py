@@ -216,9 +216,9 @@ for option in magento_inst:
 #control print(magento_inst_command)
 try:
 	inst=subprocess.run(magento_inst_command.split())
-	magento_logger.info("Magento install command: ",magento_inst_command)
+	magento_logger.info("Magento install command: {}".format(magento_inst_command))
 	inst_cron_command=yaml_data.get('www').get('www_path') + "/bin/./magento cron:install"
-	magento_logger.info("magento cron install command :", inst_cron_command)
+	magento_logger.info("magento cron install command : {}".format(inst_cron_command))
 	inst_cron=subprocess.run(inst_cron_command.split())
 	
 except:

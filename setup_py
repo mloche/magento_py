@@ -256,6 +256,7 @@ try:
 	magento_logger.info("STEP 12 Admin URL is : {}".format(printurl))
 	subprocess.run(['rm', '/tmp/.magento_init'])
 	magento_logger.info("Init deleted")
+	var_test=input("enter any key")
 except:
 	print("Could not retrieve admin URL")
 	magento_logger.info("STEP 12, could not retrieve admin url")

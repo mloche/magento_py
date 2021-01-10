@@ -177,6 +177,10 @@ print("STEP 7 : Magento installed from github")
 magento_logger.info("STEP 7 : Magento copied from git")
 
 ### STEP 8 : Editing conf files ###
+if os.path.exists("/tmp/.magento_flag") == True:
+	magento_logger.error("Previous files configuration did not end, exiting")
+	sys.exit("Previous files configuration did not end, exiting")
+
 else:
 	subprocess.run(['touch','/tmp/.magento_flag'])
 	conf_files=yaml_data.get('files')
@@ -185,6 +189,7 @@ else:
 			file_arg=conf_files[mod_file].get('file')
 			string_arg=conf_files[mod_file].get('string')
 			new_string_arg=conf_files[mod_file].get('new_string')
+			magento_logger.info("modifying file {}".format(file_arg))
 			files._replace_string(file_arg,string_arg,new_string_arg)
 		except:
 			sys.exit("Conf files modifications failed, STEP 8")
@@ -211,14 +216,16 @@ for option in magento_inst:
 #control print(magento_inst_command)
 try:
 	inst=subprocess.run(magento_inst_command.split())
+	magento_logger.info("Magento install command: ",magento_inst_command)
 	inst_cron_command=yaml_data.get('www').get('www_path') + "/bin/./magento cron:install"
+	magento_logger.info("magento cron install command :", inst_cron_command)
 	inst_cron=subprocess.run(inst_cron_command.split())
-
+	
 except:
 	sys.exit("STEP 10 : could not install magento")
 	magento_logger.error("STEP 10 could not run setup:install for magento with {} command".format(magento_inst))
 print("STEP 10 : magento installed and cron created")
-magento_logger.info("STEP 10 setup:install for magento run finished")
+magento_logger.info("STEP 10 setup:install for magento finished")
 
 
 ### STEP 11 : Configure ACL for www folder and final restart apache ###

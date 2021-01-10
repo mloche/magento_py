@@ -102,6 +102,7 @@ if len(sys.argv) != 2 :
 
 yaml_data=import_yaml_file(sys.argv[1])
 print("STEP 1 : YAML data imported")
+
 #control print(yaml_data)
 
 ### STEP 2 : Creating Error handlers ###
@@ -113,7 +114,7 @@ magento_file_handler= RotatingFileHandler(log_path, 'a', 100000, 1)
 magento_file_handler.setLevel(logging.DEBUG)
 magento_file_handler.setFormatter(magento_formatter)
 magento_logger.addHandler(magento_file_handler)
-magento_logger.info("Starting script")
+magento_logger.info("STEP 1 : Starting script \n STEP 2 : Error handler loaded")
 
 if os.path.exists("/tmp/.magento_init") == True:
 	magento_logger.error("Previous installation not finished, exiting setup")
@@ -210,7 +211,7 @@ magento_logger.info("STEP 9 Apache modules activated")
 
 magento_inst=yaml_data.get('magento_setup')
 magento_inst_command=yaml_data.get('www').get('www_path') + "/bin/./magento setup:install "
-print(magento_inst_command)
+#control print(magento_inst_command)
 for option in magento_inst:
 	magento_inst_command=magento_inst_command + str("--"+option+"="+magento_inst[option]+" ")
 #control print(magento_inst_command)

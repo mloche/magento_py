@@ -121,7 +121,7 @@ if os.path.exists("/tmp/.magento_init") == True:
 	sys.exit("Error while processing setup, previous setup did not end successfuly")
 
 subprocess.run(['touch','/tmp/.magento_init'])
-
+"""
 ### STEP 3 : Retrieve package list in YAML file and call the main package management process ###
 
 package_list=yaml_data.get('packages')
@@ -228,7 +228,7 @@ except:
 print("STEP 10 : magento installed and cron created")
 magento_logger.info("STEP 10 setup:install for magento finished")
 
-
+"""
 ### STEP 11 : Configure ACL for www folder and final restart apache ###
 
 apache_end=yaml_data.get('commands').get('apache2_end')
@@ -239,7 +239,9 @@ www_url=yaml_data.get('magento_setup')['base-url-secure']
 command_use(apache_end)
 
 try:
-	subprocess.run(['wget','-P','/tmp/','-q','--no-check-certificate',www_url])
+	recurchown._recur_chown(www_path,www_user, www_group,True)
+	subprocess.run(['wget','-P','/tmp/','--no-check-certificate',www_url])
+
 except:
 	magento_logger("STEP 11, couldn't open website for first connexion")
 	sys.exit("STEP 11, couldn't open website for first connexion")
@@ -267,6 +269,8 @@ try:
 except:
 	print("Could not retrieve admin URL")
 	magento_logger.info("STEP 12, could not retrieve admin url")
+
+
 
 
 print("#####################################\n###### {} IS FINISHED ###### \n ".format(sys.argv[0]))

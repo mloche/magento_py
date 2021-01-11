@@ -114,14 +114,14 @@ magento_file_handler= RotatingFileHandler(log_path, 'a', 100000, 1)
 magento_file_handler.setLevel(logging.DEBUG)
 magento_file_handler.setFormatter(magento_formatter)
 magento_logger.addHandler(magento_file_handler)
-magento_logger.info("STEP 1 : Starting script \n STEP 2 : Error handler loaded")
+magento_logger.info("STEP 1 : Starting script \t STEP 2 : Error handler loaded")
 
 if os.path.exists("/tmp/.magento_init") == True:
 	magento_logger.error("Previous installation not finished, exiting setup")
 	sys.exit("Error while processing setup, previous setup did not end successfuly")
 
 subprocess.run(['touch','/tmp/.magento_init'])
-"""
+
 ### STEP 3 : Retrieve package list in YAML file and call the main package management process ###
 
 package_list=yaml_data.get('packages')
@@ -198,7 +198,7 @@ else:
 	print("STEP 8 : configuration files modified")
 	subprocess.run(['rm','/tmp/.magento_flag'])
 	magento_logger.info("STEP 8 Configuration files modified, flag removed")
-	
+
 
 ### STEP 9 : Activate apachemodules and restart apache  ###
 
@@ -214,21 +214,21 @@ magento_inst_command=yaml_data.get('www').get('www_path') + "/bin/./magento setu
 #control print(magento_inst_command)
 for option in magento_inst:
 	magento_inst_command=magento_inst_command + str("--"+option+"="+magento_inst[option]+" ")
-#control print(magento_inst_command)
+#control	print(magento_inst_command)
 try:
 	inst=subprocess.run(magento_inst_command.split())
 	magento_logger.info("Magento install command: {}".format(magento_inst_command))
 	inst_cron_command=yaml_data.get('www').get('www_path') + "/bin/./magento cron:install"
 	magento_logger.info("magento cron install command : {}".format(inst_cron_command))
 	inst_cron=subprocess.run(inst_cron_command.split())
-	
+
 except:
 	sys.exit("STEP 10 : could not install magento")
 	magento_logger.error("STEP 10 could not run setup:install for magento with {} command".format(magento_inst))
 print("STEP 10 : magento installed and cron created")
 magento_logger.info("STEP 10 setup:install for magento finished")
 
-"""
+
 ### STEP 11 : Configure ACL for www folder and final restart apache ###
 
 apache_end=yaml_data.get('commands').get('apache2_end')
@@ -241,7 +241,7 @@ command_use(apache_end)
 try:
 	recurchown._recur_chown(www_path,www_user, www_group,True)
 	subprocess.run(['wget','-P','/tmp/','--no-check-certificate',www_url])
-
+	magento_logger.info("Connected with succes to website")
 except:
 	magento_logger("STEP 11, couldn't open website for first connexion")
 	sys.exit("STEP 11, couldn't open website for first connexion")
@@ -265,7 +265,6 @@ try:
 	magento_logger.info("STEP 12 Admin URL is : {}".format(printurl))
 	subprocess.run(['rm', '/tmp/.magento_init'])
 	magento_logger.info("Init deleted")
-	var_test=input("enter any key")
 except:
 	print("Could not retrieve admin URL")
 	magento_logger.info("STEP 12, could not retrieve admin url")

@@ -50,8 +50,8 @@ A hidden .flag file will be created at the begining of the file modification pro
  - logging: will contain path and filename for the desired logfile, defaut is /var/log/magento_py.log
  - www: provides values to modify permission on the www_path to www_user
  - database: Values for the DB manipulation
-  - database: values required to connect to the database or check if existing
-  - query: querys that will create db, user and grant privilegies
+   1 database: values required to connect to the database or check if existing
+   2 query: querys that will create db, user and grant privilegies
  - packages: list of the apt packages needed
  - commands: list of the executed commands for each part
  - files: list of the files and modification done

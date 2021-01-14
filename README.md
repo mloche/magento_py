@@ -32,7 +32,7 @@ Usage is pretty straight forward, user will need to type the following under roo
 
 >sudo ./setup.py PATH
 >
->sudo ./setup.py config_files/config.yaml                       ***for exemple***
+>sudo ./setup.py config_files/config.yaml                       ***for example***
 
 
 PATH is the path to the YAML config file, can be either relative or absolute path. The script will 

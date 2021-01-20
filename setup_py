@@ -92,7 +92,7 @@ def import_yaml_file(file):
 #              MAIN PROGRAM                        #
 ####################################################
 
-### Check for a second arguments before anything ###
+### Check for a second argument before anything ###
 if len(sys.argv) != 2 :
 	raise ValueError("Please provide path to yaml file as argument, usage : {} path ".format(sys.argv[0]))
 
@@ -133,8 +133,8 @@ magento_logger.info("STEP 3 : packages are installed, list : {}".format(package_
 
 
 ### STEP 4 : Getting database configuration from YAML       ###
-### Test if database exist, if it is empty calls the module ###
-### Database aliased as mariadb  and execute the querys     ###
+### Test if database exists, if empty it calls the module ###
+### Database aliased as mariadb  and execute the queries     ###
 
 db_info=yaml_data.get('database').get('database')
 #print(db_info)

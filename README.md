@@ -2,22 +2,22 @@
 
 Version : 1.0  
 
-Developed by : Michel LOCHE   
+Developped by : Michel LOCHE   
 
 Release date : 2021 jan 10th  
 
 #  UTILITY    
 
-This script writen in Python3 will take care of installing all the packages required,  
+This script written in Python3 will take care of installing all the packages required,  
  create the database and install Magento software in its community edition. Script has been tested and developped for Debian 10.
 
 
 # REQUISITES 
 
-To work the script requires a few tools listed bellow. You can use the bash script requisites.sh   
+To work, the script requires a few tools listed below. You can use the bash script requisites.sh   
 in the modules folder to install them.  
 
-Or you can install manualy the following packages and modules :   
+Or you can install manually the following packages and modules :   
  - Python3 package
  - python3-pip package 
  - sudo package
@@ -51,7 +51,7 @@ A hidden .flag file will be created at the begining of the file modification pro
  - www: provides values to modify permission on the www_path to www_user
  - database: Values for the DB manipulation
    1. database: values required to connect to the database or check if existing
-   2. query: querys that will create db, user and grant privilegies
+   2. query: queries that will create db, user and grant privileges
  - packages: list of the apt packages needed
  - commands: list of the executed commands for each part
  - files: list of the files and modification done
@@ -59,7 +59,7 @@ A hidden .flag file will be created at the begining of the file modification pro
 
 # CERTIFICATE :  
  
- - cert.cnf for the auto certification informations, can be personalized with Organization informations
+ - cert.cnf for the auto certification information, can be personalized with Organization information
 
 # NOTES
 
